@@ -22,3 +22,11 @@ func TestNoAuth(t *testing.T) {
 	assert.Error(t, err)
 	assert.Equal(t, "client not authenticated", err.Error())
 }
+
+func TestRPCMethod(t *testing.T) {
+	type dummy struct {
+		Method string
+	}
+	method := rpcMethod(&dummy{Method: "foo"})
+	assert.Equal(t, "foo", method)
+}
