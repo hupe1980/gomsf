@@ -1,101 +1,101 @@
 package gomsf
 
-type sessionMeterpreterWriteReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionMeterpreterWriteReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 	Command   string
 }
 
-type sessionMeterpreterWriteRes struct {
+type SessionMeterpreterWriteRes struct {
 	Result string `msgpack:"result"`
 }
 
-type sessionMeterpreterReadReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionMeterpreterReadReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 }
 
-type sessionMeterpreterReadRes struct {
+type SessionMeterpreterReadRes struct {
 	Data string `msgpack:"data"`
 }
 
-type sessionMeterpreterRunSingleReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionMeterpreterRunSingleReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 	Command   string
 }
 
-type sessionMeterpreterRunSingleRes sessionMeterpreterWriteRes
+type SessionMeterpreterRunSingleRes SessionMeterpreterWriteRes
 
-type sessionMeterpreterDetachReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionMeterpreterDetachReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 }
 
-type sessionMeterpreterDetachRes sessionMeterpreterWriteRes
+type SessionMeterpreterDetachRes SessionMeterpreterWriteRes
 
-type sessionMeterpreterKillReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionMeterpreterKillReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 }
 
-type sessionMeterpreterKillRes sessionMeterpreterWriteRes
+type SessionMeterpreterKillRes SessionMeterpreterWriteRes
 
-type sessionCompatibleModulesReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionCompatibleModulesReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 }
 
-type sessionCompatibleModulesRes struct {
+type SessionCompatibleModulesRes struct {
 	Modules []string `msgpack:"modules"`
 }
 
-type sessionShellUpgradeReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionShellUpgradeReq struct {
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method     string
 	Token      string
 	SessionID  uint32
-	IpAddress  string
+	IPAddress  string
 	PortNumber uint32
 }
 
-type sessionShellUpgradeRes sessionMeterpreterWriteRes
+type SessionShellUpgradeRes SessionMeterpreterWriteRes
 
-type sessionRingClearReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionRingClearReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 }
 
-type sessionRingClearRes sessionMeterpreterWriteRes
+type SessionRingClearRes SessionMeterpreterWriteRes
 
-type sessionRingPutReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionRingPutReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 	Command   string
 }
 
-type sessionRingPutRes struct {
+type SessionRingPutRes struct {
 	WriteCount uint32 `msgpack:"write_count"`
 }
 
-type sessionListReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionListReq struct {
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method   string
 	Token    string
 }
@@ -117,7 +117,7 @@ type SessionListRes map[uint32]struct {
 }
 
 func (c *Client) SessionList() (SessionListRes, error) {
-	req := &sessionListReq{
+	req := &SessionListReq{
 		Method: "session.list",
 		Token:  c.token,
 	}
@@ -128,30 +128,29 @@ func (c *Client) SessionList() (SessionListRes, error) {
 	}
 
 	return res, nil
-
 }
 
-type sessionShellWriteReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionShellWriteReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 	Command   string
 }
 
-type sessionShellWriteRes struct {
+type SessionShellWriteRes struct {
 	WriteCount string `msgpack:"write_count"`
 }
 
 func (c *Client) SessionShellWrite(session uint32, command string) error {
-	req := &sessionShellWriteReq{
+	req := &SessionShellWriteReq{
 		Method:    "session.shell_write",
 		Token:     c.token,
 		SessionID: session,
 		Command:   command,
 	}
 
-	var res sessionShellWriteRes
+	var res SessionShellWriteRes
 	if err := c.call(req, &res); err != nil {
 		return err
 	}
@@ -159,28 +158,28 @@ func (c *Client) SessionShellWrite(session uint32, command string) error {
 	return nil
 }
 
-type sessionShellReadReq struct {
-	_msgpack    struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionShellReadReq struct {
+	_msgpack    struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method      string
 	Token       string
 	SessionID   uint32
 	ReadPointer uint32
 }
 
-type sessionShellReadRes struct {
+type SessionShellReadRes struct {
 	Seq  uint32 `msgpack:"seq"`
 	Data string `msgpack:"data"`
 }
 
-func (c *Client) SessionShellRead(session uint32, readPointer uint32) (string, error) {
-	req := &sessionShellReadReq{
+func (c *Client) SessionShellRead(session, readPointer uint32) (string, error) {
+	req := &SessionShellReadReq{
 		Method:      "session.shell_read",
 		Token:       c.token,
 		SessionID:   session,
 		ReadPointer: readPointer,
 	}
 
-	var res sessionShellReadRes
+	var res SessionShellReadRes
 	if err := c.call(req, &res); err != nil {
 		return "", err
 	}
@@ -188,187 +187,196 @@ func (c *Client) SessionShellRead(session uint32, readPointer uint32) (string, e
 	return res.Data, nil
 }
 
-func (c *Client) SessionMeterpreterWrite(session uint32, command string) (sessionMeterpreterWriteRes, error) {
-	req := &sessionMeterpreterWriteReq{
+func (c *Client) SessionMeterpreterWrite(session uint32, command string) (SessionMeterpreterWriteRes, error) {
+	req := &SessionMeterpreterWriteReq{
 		Method:    "session.meterpreter_write",
 		Token:     c.token,
 		SessionID: session,
 		Command:   command,
 	}
 
-	var res sessionMeterpreterWriteRes
+	var res SessionMeterpreterWriteRes
 	if err := c.call(req, &res); err != nil {
-		return sessionMeterpreterWriteRes{}, err
+		return SessionMeterpreterWriteRes{}, err
 	}
 
 	return res, nil
 }
 
-func (c *Client) SessionMeterpreterRead(session uint32) (sessionMeterpreterReadRes, error) {
-	req := &sessionMeterpreterReadReq{
+func (c *Client) SessionMeterpreterRead(session uint32) (SessionMeterpreterReadRes, error) {
+	req := &SessionMeterpreterReadReq{
 		Method:    "session.meterpreter_read",
 		Token:     c.token,
 		SessionID: session,
 	}
 
-	var res sessionMeterpreterReadRes
+	var res SessionMeterpreterReadRes
 	if err := c.call(req, &res); err != nil {
-		return sessionMeterpreterReadRes{}, err
+		return SessionMeterpreterReadRes{}, err
 	}
+
 	return res, nil
 }
 
-func (c *Client) SessionMeterpreterRunSingle(session uint32, command string) (sessionMeterpreterRunSingleRes, error) {
-	req := &sessionMeterpreterRunSingleReq{
+func (c *Client) SessionMeterpreterRunSingle(session uint32, command string) (SessionMeterpreterRunSingleRes, error) {
+	req := &SessionMeterpreterRunSingleReq{
 		Method:    "session.meterpreter_run_single",
 		Token:     c.token,
 		SessionID: session,
 		Command:   command,
 	}
 
-	var res sessionMeterpreterRunSingleRes
+	var res SessionMeterpreterRunSingleRes
 	if err := c.call(req, &res); err != nil {
-		return sessionMeterpreterRunSingleRes{}, err
+		return SessionMeterpreterRunSingleRes{}, err
 	}
 
 	return res, nil
 }
 
-func (c *Client) SessionMeterpreterSessionDetach(session uint32) (sessionMeterpreterDetachRes, error) {
-	req := &sessionMeterpreterDetachReq{
+func (c *Client) SessionMeterpreterSessionDetach(session uint32) (SessionMeterpreterDetachRes, error) {
+	req := &SessionMeterpreterDetachReq{
 		Method:    "session.meterpreter_session_detach",
 		Token:     c.token,
 		SessionID: session,
 	}
 
-	var res sessionMeterpreterDetachRes
+	var res SessionMeterpreterDetachRes
 	if err := c.call(req, &res); err != nil {
-		return sessionMeterpreterDetachRes{}, err
+		return SessionMeterpreterDetachRes{}, err
 	}
+
 	return res, nil
 }
 
-func (c *Client) SessionMeterpreterSessionKill(session uint32) (sessionMeterpreterKillRes, error) {
-	req := &sessionMeterpreterKillReq{
+func (c *Client) SessionMeterpreterSessionKill(session uint32) (SessionMeterpreterKillRes, error) {
+	req := &SessionMeterpreterKillReq{
 		Method:    "session.meterpreter_session_kill",
 		Token:     c.token,
 		SessionID: session,
 	}
 
-	var res sessionMeterpreterKillRes
+	var res SessionMeterpreterKillRes
 	if err := c.call(req, &res); err != nil {
-		return sessionMeterpreterKillRes{}, err
+		return SessionMeterpreterKillRes{}, err
 	}
+
 	return res, nil
 }
 
-type sessionMeterpreterTabsReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionMeterpreterTabsReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 	InputLine string
 }
 
-type sessionMeterpreterTabsRes struct {
+type SessionMeterpreterTabsRes struct {
 	Tabs []string `msgpack:"tabs"`
 }
 
-func (c *Client) SessionMeterpreterTabs(session uint32, inputLine string) (sessionMeterpreterTabsRes, error) {
-	req := &sessionMeterpreterTabsReq{
+func (c *Client) SessionMeterpreterTabs(session uint32, inputLine string) (SessionMeterpreterTabsRes, error) {
+	req := &SessionMeterpreterTabsReq{
 		Method:    "session.meterpreter_tabs",
 		Token:     c.token,
 		SessionID: session,
 		InputLine: inputLine,
 	}
 
-	var res sessionMeterpreterTabsRes
+	var res SessionMeterpreterTabsRes
 	if err := c.call(req, &res); err != nil {
-		return sessionMeterpreterTabsRes{}, err
+		return SessionMeterpreterTabsRes{}, err
 	}
+
 	return res, nil
 }
 
-func (c *Client) SessionCompatibleModules(session uint32) (sessionCompatibleModulesRes, error) {
-	req := &sessionCompatibleModulesReq{
+func (c *Client) SessionCompatibleModules(session uint32) (SessionCompatibleModulesRes, error) {
+	req := &SessionCompatibleModulesReq{
 		Method:    "session.compatible_modules",
 		Token:     c.token,
 		SessionID: session,
 	}
 
-	var res sessionCompatibleModulesRes
+	var res SessionCompatibleModulesRes
 	if err := c.call(req, &res); err != nil {
-		return sessionCompatibleModulesRes{}, err
+		return SessionCompatibleModulesRes{}, err
 	}
+
 	return res, nil
 }
 
-func (c *Client) SessionShellUpgrade(session uint32, lhostAddress string, lportNumber uint32) (sessionShellUpgradeRes, error) {
-	req := &sessionShellUpgradeReq{
+func (c *Client) SessionShellUpgrade(session uint32, lhostAddress string, lportNumber uint32) (SessionShellUpgradeRes, error) {
+	req := &SessionShellUpgradeReq{
 		Method:     "session.shell_upgrade",
 		Token:      c.token,
 		SessionID:  session,
-		IpAddress:  lhostAddress,
+		IPAddress:  lhostAddress,
 		PortNumber: lportNumber,
 	}
 
-	var res sessionShellUpgradeRes
+	var res SessionShellUpgradeRes
 	if err := c.call(req, &res); err != nil {
-		return sessionShellUpgradeRes{}, err
+		return SessionShellUpgradeRes{}, err
 	}
+
 	return res, nil
 }
 
-func (c *Client) SessionRingClear(session uint32) (sessionRingClearRes, error) {
-	req := &sessionRingClearReq{
+func (c *Client) SessionRingClear(session uint32) (SessionRingClearRes, error) {
+	req := &SessionRingClearReq{
 		Method:    "session.ring_clear",
 		Token:     c.token,
 		SessionID: session,
 	}
 
-	var res sessionRingClearRes
+	var res SessionRingClearRes
 	if err := c.call(req, &res); err != nil {
-		return sessionRingClearRes{}, err
+		return SessionRingClearRes{}, err
 	}
+
 	return res, nil
 }
 
-type sessionRingLastReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type SessionRingLastReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method    string
 	Token     string
 	SessionID uint32
 }
 
-type sessionRingLastRes struct {
+type SessionRingLastRes struct {
 	Seq uint32 `msgpack:"seq"`
 }
 
-func (c *Client) SessionRingLast(session uint32) (sessionRingLastRes, error) {
-	req := &sessionRingLastReq{
+func (c *Client) SessionRingLast(session uint32) (SessionRingLastRes, error) {
+	req := &SessionRingLastReq{
 		Method:    "session.ring_last",
 		Token:     c.token,
 		SessionID: session,
 	}
 
-	var res sessionRingLastRes
+	var res SessionRingLastRes
 	if err := c.call(req, &res); err != nil {
-		return sessionRingLastRes{}, err
+		return SessionRingLastRes{}, err
 	}
+
 	return res, nil
 }
 
-func (c *Client) SessionRingPut(session uint32, command string) (sessionRingPutRes, error) {
-	req := &sessionRingPutReq{
+func (c *Client) SessionRingPut(session uint32, command string) (SessionRingPutRes, error) {
+	req := &SessionRingPutReq{
 		Method:    "session.ring_put",
 		Token:     c.token,
 		SessionID: session,
 		Command:   command,
 	}
 
-	var res sessionRingPutRes
+	var res SessionRingPutRes
 	if err := c.call(req, &res); err != nil {
-		return sessionRingPutRes{}, err
+		return SessionRingPutRes{}, err
 	}
+
 	return res, nil
 }

@@ -2,14 +2,14 @@ package gomsf
 
 import "errors"
 
-type loginReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type LoginReq struct {
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method   string
 	Username string // The username
 	Password string // The password
 }
 
-type loginRes struct {
+type LoginRes struct {
 	Result string `msgpack:"result"`
 	Token  string `msgpack:"token"`
 }
@@ -17,16 +17,17 @@ type loginRes struct {
 // Login logs in by calling the 'auth.login' API. The authentication token will expire after 5
 // minutes, but will automatically be rewnewed when you make a new RPC request.
 func (c *Client) Login(user, pass string) error {
-	req := &loginReq{
+	req := &LoginReq{
 		Method:   "auth.login",
 		Username: user,
 		Password: pass,
 	}
 
-	var res *loginRes
+	var res *LoginRes
 	if err := c.call(req, &res); err != nil {
 		return err
 	}
+
 	if res.Result != "success" || res.Token == "" {
 		return errors.New("authentication failed")
 	}
@@ -43,24 +44,24 @@ func (c *Client) ReLogin() error {
 	return c.Login(c.user, c.pass)
 }
 
-type logoutReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+type LogoutReq struct {
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method   string
 	Token    string
 }
 
-type logoutRes struct {
+type LogoutRes struct {
 	Result string `msgpack:"result"`
 }
 
 func (c *Client) Logout() error {
-	req := &logoutReq{
+	req := &LogoutReq{
 		Method: "auth.logout",
 		Token:  c.token,
 	}
 
-	var res *logoutRes
-	if err := c.call(req, res); err != nil {
+	var res *LogoutRes
+	if err := c.call(req, &res); err != nil {
 		return err
 	}
 

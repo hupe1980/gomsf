@@ -27,6 +27,8 @@ func TestRPCMethod(t *testing.T) {
 	type dummy struct {
 		Method string
 	}
+
 	method := rpcMethod(&dummy{Method: "foo"})
+
 	assert.Equal(t, "foo", method)
 }

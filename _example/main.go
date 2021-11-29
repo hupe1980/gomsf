@@ -25,9 +25,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Version: %s\nRuby: %s\nAPI: %s\n\n\n", version.Version, version.Ruby, version.Api)
+	fmt.Printf("Version: %s\nRuby: %s\nAPI: %s\n\n\n", version.Version, version.Ruby, version.API)
 
-	enocodeResult, err := client.ModuleEncode("AAAA", "x86/shikata_ga_nai", gomsf.EncodingOptions{
+	enocodeResult, err := client.ModuleEncode("AAAA", "x86/shikata_ga_nai", &gomsf.EncodingOptions{
 		Format: "c",
 	})
 	if err != nil {

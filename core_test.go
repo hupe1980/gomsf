@@ -11,10 +11,10 @@ import (
 
 func TestCoreVersion(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		_ = msgpack.NewEncoder(w).Encode(&coreVersionRes{
+		_ = msgpack.NewEncoder(w).Encode(&CoreVersionRes{
 			Version: "4711",
 			Ruby:    "ruby",
-			Api:     "api",
+			API:     "api",
 		})
 	}))
 	defer ts.Close()
@@ -29,5 +29,5 @@ func TestCoreVersion(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "4711", result.Version)
 	assert.Equal(t, "ruby", result.Ruby)
-	assert.Equal(t, "api", result.Api)
+	assert.Equal(t, "api", result.API)
 }

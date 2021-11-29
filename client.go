@@ -36,7 +36,7 @@ func New(address string, optFns ...func(o *ClientOptions)) (*Client, error) {
 	options := ClientOptions{
 		Token:           "",
 		SSL:             true,
-		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, //nolint:gosec //unknown ca
 		Version:         "1.0",
 	}
 	for _, fn := range optFns {
@@ -58,10 +58,11 @@ func New(address string, optFns ...func(o *ClientOptions)) (*Client, error) {
 		url:     fmt.Sprintf("%s://%s/api/%s", protocol, address, options.Version),
 		client:  client,
 	}
+
 	return c, nil
 }
 
-func (c *Client) call(req interface{}, res interface{}) error {
+func (c *Client) call(req, res interface{}) error {
 	method := rpcMethod(req)
 	if method != "auth.login" && method != "health.check" {
 		if c.token == "" {
@@ -78,6 +79,7 @@ func (c *Client) call(req interface{}, res interface{}) error {
 	if err != nil {
 		return err
 	}
+
 	request.Header.Add("Content-Type", "binary/message-pack")
 
 	response, err := c.client.Do(request)
@@ -104,6 +106,7 @@ func newHTTPClient(options ClientOptions) (*http.Client, error) {
 		if err != nil {
 			return nil, err
 		}
+
 		transport.Proxy = http.ProxyURL(proxyURL)
 	}
 
@@ -116,8 +119,10 @@ func newHTTPClient(options ClientOptions) (*http.Client, error) {
 func rpcMethod(req interface{}) string {
 	stype := reflect.ValueOf(req).Elem()
 	field := stype.FieldByName("Method")
+
 	if field.IsValid() {
 		return field.String()
 	}
+
 	return ""
 }
