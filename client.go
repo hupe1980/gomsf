@@ -15,12 +15,12 @@ import (
 )
 
 type Client struct {
-	user    string
-	pass    string
-	token   string
-	url     string
-	version string
-	client  *http.Client
+	user       string
+	pass       string
+	token      string
+	url        string
+	apiVersion string
+	client     *http.Client
 }
 
 type ClientOptions struct {
@@ -29,7 +29,7 @@ type ClientOptions struct {
 	TLSClientConfig *tls.Config
 	Token           string
 	SSL             bool
-	Version         string
+	APIVersion      string
 }
 
 func New(address string, optFns ...func(o *ClientOptions)) (*Client, error) {
@@ -37,7 +37,7 @@ func New(address string, optFns ...func(o *ClientOptions)) (*Client, error) {
 		Token:           "",
 		SSL:             true,
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, //nolint:gosec //unknown ca
-		Version:         "1.0",
+		APIVersion:      "1.0",
 	}
 	for _, fn := range optFns {
 		fn(&options)
@@ -54,12 +54,20 @@ func New(address string, optFns ...func(o *ClientOptions)) (*Client, error) {
 	}
 
 	c := &Client{
-		version: options.Version,
-		url:     fmt.Sprintf("%s://%s/api/%s", protocol, address, options.Version),
-		client:  client,
+		apiVersion: options.APIVersion,
+		url:        fmt.Sprintf("%s://%s/api/%s", protocol, address, options.APIVersion),
+		client:     client,
 	}
 
 	return c, nil
+}
+
+func (c *Client) HasToken() bool {
+	return c.token != ""
+}
+
+func (c *Client) APIVersion() string {
+	return c.apiVersion
 }
 
 func (c *Client) call(req, res interface{}) error {

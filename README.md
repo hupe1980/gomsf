@@ -33,7 +33,7 @@ if err != nil {
 }
 fmt.Printf("%s\n", enocodeResult.Encoded)
 ```
-This will encode 'AAAA' with shikata_ga_nai, and prints the following:
+This will encode 'AAAA' with shikata_ga_nai, and prints the following c code:
 ```c
 unsigned char buf[] =
 "\xbd\x66\xf8\x8b\x6c\xda\xc2\xd9\x74\x24\xf4\x5f\x29\xc9\xb1"
