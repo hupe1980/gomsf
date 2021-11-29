@@ -1,7 +1,7 @@
 package gomsf
 
 type jobInfoReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 	JobId    string
@@ -30,7 +30,7 @@ func (c *Client) JobInfo(jobID string) (jobInfoRes, error) {
 }
 
 type jobListReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -51,7 +51,7 @@ func (c *Client) JobList() (jobListRes, error) {
 }
 
 type jobStopReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 	JobID    string

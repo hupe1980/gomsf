@@ -1,7 +1,7 @@
 package gomsf
 
 type consoleCreateReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -26,7 +26,7 @@ func (c *Client) ConsoleCreate() (consoleCreateRes, error) {
 }
 
 type consoleDestroyReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	ConsoleId string
@@ -51,7 +51,7 @@ func (c *Client) ConsoleDestroy(consoleid string) (consoleDestroyRes, error) {
 }
 
 type consoleListReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -76,7 +76,7 @@ func (c *Client) ConsoleList() (consoleListRes, error) {
 }
 
 type consoleReadReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	ConsoleId string
@@ -103,7 +103,7 @@ func (c *Client) ConsoleRead(consoleId string) (consoleReadRes, error) {
 }
 
 type consoleSessionDetachReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	ConsoleId string
@@ -128,7 +128,7 @@ func (c *Client) ConsoleSessionDetach(consoleId string) (consoleSessionDetachRes
 }
 
 type consoleSessionKillReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	ConsoleId string
@@ -153,7 +153,7 @@ func (c *Client) ConsoleSessionKill(consoleId string) (consoleSessionKillRes, er
 }
 
 type consoleTabsReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	ConsoleId string
@@ -180,7 +180,7 @@ func (c *Client) ConsoleTabs(consoleId, inputLine string) (consoleTabsRes, error
 }
 
 type consoleWriteReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	ConsoleId string

@@ -1,7 +1,7 @@
 package gomsf
 
 type pluginLoadReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	PluginName string
@@ -13,7 +13,7 @@ type pluginLoadRes struct {
 }
 
 type pluginUnLoadReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	PluginName string
@@ -24,7 +24,7 @@ type pluginUnLoadRes struct {
 }
 
 type pluginLoadedReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }

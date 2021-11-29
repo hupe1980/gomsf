@@ -1,7 +1,7 @@
 package gomsf
 
 type checkReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 }
 

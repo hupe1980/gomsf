@@ -3,7 +3,7 @@ package gomsf
 import "errors"
 
 type loginReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Username string // The username
 	Password string // The password
@@ -44,7 +44,7 @@ func (c *Client) ReLogin() error {
 }
 
 type logoutReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }

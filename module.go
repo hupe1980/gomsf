@@ -11,7 +11,7 @@ const (
 )
 
 type moduleExploitsReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -21,7 +21,7 @@ type moduleExploitsRes struct {
 }
 
 type modulePostReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -31,7 +31,7 @@ type modulePostRes struct {
 }
 
 type modulePayloadsReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -41,7 +41,7 @@ type modulePayloadsRes struct {
 }
 
 type moduleEncodersReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -51,7 +51,7 @@ type moduleEncodersRes struct {
 }
 
 type moduleNopsReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -61,7 +61,7 @@ type moduleNopsRes struct {
 }
 
 type moduleInfoReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	ModuleType ModuleType
@@ -80,7 +80,7 @@ type moduleInfoRes struct {
 }
 
 type moduleOptionsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	ModuleType ModuleType
@@ -98,7 +98,7 @@ type moduleOptionsRes map[string]struct {
 }
 
 type moduleCompatiblePayloadsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	ModuleName string
@@ -109,7 +109,7 @@ type moduleCompatiblePayloadsRes struct {
 }
 
 type moduleTargetCompatiblePayloadsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	ModuleName string
@@ -121,7 +121,7 @@ type moduleTargetCompatiblePayloadsRes struct {
 }
 
 type moduleCompatibleSessionsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	ModuleName string
@@ -144,7 +144,7 @@ type EncodingOptions struct {
 }
 
 type moduleEncodeReq struct {
-	_msgpack      struct{} `msgpack:",asArray"`
+	_msgpack      struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method        string
 	Token         string
 	Data          string
@@ -157,7 +157,7 @@ type moduleEncodeRes struct {
 }
 
 type moduleExecuteReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	ModuleType ModuleType
@@ -170,7 +170,7 @@ type moduleExecuteRes struct {
 }
 
 type moduleArchitecturesReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -203,7 +203,7 @@ func (c *Client) ModuleExploits() (*moduleExploitsRes, error) {
 }
 
 type moduleAuxiliaryReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }

@@ -5,7 +5,7 @@ import (
 )
 
 type sessionListReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -27,7 +27,7 @@ type SessionListRes map[uint32]struct {
 }
 
 type sessionWriteReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -39,7 +39,7 @@ type sessionWriteRes struct {
 }
 
 type sessionReadReq struct {
-	_msgpack    struct{} `msgpack:",asArray"`
+	_msgpack    struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method      string
 	Token       string
 	SessionID   uint32
@@ -52,7 +52,7 @@ type sessionReadRes struct {
 }
 
 type sessionRingLastReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -63,7 +63,7 @@ type sessionRingLastRes struct {
 }
 
 type sessionMeterpreterWriteReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -75,7 +75,7 @@ type sessionMeterpreterWriteRes struct {
 }
 
 type sessionMeterpreterReadReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -86,7 +86,7 @@ type sessionMeterpreterReadRes struct {
 }
 
 type sessionMeterpreterRunSingleReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -96,7 +96,7 @@ type sessionMeterpreterRunSingleReq struct {
 type sessionMeterpreterRunSingleRes sessionMeterpreterWriteRes
 
 type sessionMeterpreterDetachReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -105,7 +105,7 @@ type sessionMeterpreterDetachReq struct {
 type sessionMeterpreterDetachRes sessionMeterpreterWriteRes
 
 type sessionMeterpreterKillReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -114,7 +114,7 @@ type sessionMeterpreterKillReq struct {
 type sessionMeterpreterKillRes sessionMeterpreterWriteRes
 
 type sessionMeterpreterTabsReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -126,7 +126,7 @@ type sessionMeterpreterTabsRes struct {
 }
 
 type sessionCompatibleModulesReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -137,7 +137,7 @@ type sessionCompatibleModulesRes struct {
 }
 
 type sessionShellUpgradeReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	SessionID  uint32
@@ -148,7 +148,7 @@ type sessionShellUpgradeReq struct {
 type sessionShellUpgradeRes sessionMeterpreterWriteRes
 
 type sessionRingClearReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32
@@ -157,7 +157,7 @@ type sessionRingClearReq struct {
 type sessionRingClearRes sessionMeterpreterWriteRes
 
 type sessionRingPutReq struct {
-	_msgpack  struct{} `msgpack:",asArray"`
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
 	Token     string
 	SessionID uint32

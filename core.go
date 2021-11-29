@@ -6,7 +6,7 @@ import (
 )
 
 type coreAddModulePathReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 	Path     string
@@ -37,7 +37,7 @@ func (c *Client) CoreAddModulePath(path string) (coreAddModulePathRes, error) {
 }
 
 type coreGetgReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	OptionName string
@@ -63,7 +63,7 @@ func (c *Client) CoreGetg(optionName string) (coreGetgRes, error) {
 }
 
 type coreModuleStatsReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -92,7 +92,7 @@ func (c *Client) CoreModuleStats() (coreModuleStatsRes, error) {
 }
 
 type coreReloadModulesReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -121,7 +121,7 @@ func (c *Client) CoreReloadModules() (coreReloadModulesRes, error) {
 }
 
 type coreSaveReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -145,7 +145,7 @@ func (c *Client) CoreSave() (coreSaveRes, error) {
 }
 
 type coreSetgReq struct {
-	_msgpack    struct{} `msgpack:",asArray"`
+	_msgpack    struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method      string
 	Token       string
 	OptionName  string
@@ -173,7 +173,7 @@ func (c *Client) CoreSetg(optionName, optionValue string) (coreSetgRes, error) {
 }
 
 type coreStopReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -196,7 +196,7 @@ func (c *Client) CoreStop() (coreStopRes, error) {
 }
 
 type coreThreadKillReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 	ThreadId string
@@ -222,7 +222,7 @@ func (c *Client) CoreThreadKill(threadId string) (coreThreadKillRes, error) {
 }
 
 type coreThreadListReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
@@ -249,7 +249,7 @@ func (c *Client) CoreThreadList() (coreThreadListRes, error) {
 }
 
 type coreUnsetgReq struct {
-	_msgpack   struct{} `msgpack:",asArray"`
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method     string
 	Token      string
 	OptionName string
@@ -275,7 +275,7 @@ func (c *Client) CoreUnsetg(optionName string) (coreUnsetgRes, error) {
 }
 
 type coreVersionReq struct {
-	_msgpack struct{} `msgpack:",asArray"`
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
 	Token    string
 }
