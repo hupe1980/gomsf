@@ -382,14 +382,15 @@ type ModuleExecuteReq struct {
 	Token      string
 	ModuleType ModuleType
 	ModuleName string
-	Options    map[string]string
+	Options    map[string]interface{}
 }
 
 type ModuleExecuteRes struct {
 	JobID uint32 `msgpack:"job_id"`
+	UUID  string `msgpack:"uuid"`
 }
 
-func (c *Client) ModuleExecute(moduleType ModuleType, moduleName string, moduleOptions map[string]string) (*ModuleExecuteRes, error) {
+func (c *Client) ModuleExecute(moduleType ModuleType, moduleName string, moduleOptions map[string]interface{}) (*ModuleExecuteRes, error) {
 	req := &ModuleExecuteReq{
 		Method:     "module.execute",
 		Token:      c.token,

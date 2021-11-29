@@ -55,5 +55,20 @@ This gives us the metadata of ms08_067_netapi
 Name: MS08-067 Microsoft Server Service Relative Path Stack Corruption
 Rank: great
 ```
+
+## Execut4 a module
+```golang
+executeResult, err := client.ModuleExecute(gomsf.Exploit, "multi/handler", map[string]interface{}{
+    "LHOST":   "0.0.0.0",
+    "LPORT":   4444,
+    "PAYLOAD": "generic/shell_reverse_tcp",
+})
+if err != nil {
+    panic(err)
+}
+
+fmt.Printf("JobID: %d\n", executeResult.JobID)
+fmt.Printf("UUID: %s\n", executeResult.UUID)
+```
 ## License
 [MIT](LICENCE)

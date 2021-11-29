@@ -276,11 +276,11 @@ type SessionMeterpreterTabsRes struct {
 	Tabs []string `msgpack:"tabs"`
 }
 
-func (c *Client) SessionMeterpreterTabs(session uint32, inputLine string) (SessionMeterpreterTabsRes, error) {
+func (c *Client) SessionMeterpreterTabs(sessionID uint32, inputLine string) (SessionMeterpreterTabsRes, error) {
 	req := &SessionMeterpreterTabsReq{
 		Method:    "session.meterpreter_tabs",
 		Token:     c.token,
-		SessionID: session,
+		SessionID: sessionID,
 		InputLine: inputLine,
 	}
 
