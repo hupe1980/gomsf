@@ -25,7 +25,7 @@ defer client.Logout()
 ```
 ## Encode data with an encoder
 ```golang
-enocodeResult, err := client.ModuleEncode("AAAA", "x86/shikata_ga_nai", gomsf.EncodingOptions{
+enocodeResult, err := client.ModuleEncode("AAAA", "x86/shikata_ga_nai", &gomsf.EncodingOptions{
     Format: "c",
 })
 if err != nil {
