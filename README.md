@@ -5,6 +5,8 @@
 
 https://docs.rapid7.com/metasploit/rpc-api
 
+:warning: This is experimental and subject to breaking changes.
+
 ## Starting the RPC Server for Metasploit
 ```bash
 msfrpcd -U user -P pass
