@@ -22,16 +22,16 @@ type coreAddModulePathRes struct {
 }
 
 // CoreAddModulePath adds a new local file system path (local to the server) as a module path
-func (c *Client) CoreAddModulePath(path string) (coreAddModulePathRes, error) {
+func (c *Client) CoreAddModulePath(path string) (*coreAddModulePathRes, error) {
 	req := &coreAddModulePathReq{
 		Method: "core.add_module_path",
 		Token:  c.token,
 		Path:   path,
 	}
 
-	var res coreAddModulePathRes
+	var res *coreAddModulePathRes
 	if err := c.call(req, &res); err != nil {
-		return coreAddModulePathRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -48,7 +48,7 @@ type coreGetgRes struct {
 }
 
 // CoreGetg returns a global datastore option
-func (c *Client) CoreGetg(optionName string) (coreGetgRes, error) {
+func (c *Client) CoreGetg(optionName string) (*coreGetgRes, error) {
 	req := &coreGetgReq{
 		Method:     "core.getg",
 		Token:      c.token,
@@ -57,9 +57,9 @@ func (c *Client) CoreGetg(optionName string) (coreGetgRes, error) {
 
 	var res interface{}
 	if err := c.call(req, &res); err != nil {
-		return coreGetgRes{}, err
+		return nil, err
 	}
-	return coreGetgRes{Result: fmt.Sprintf("%s", reflect.ValueOf(res).MapIndex(reflect.ValueOf(optionName)))}, nil
+	return &coreGetgRes{Result: fmt.Sprintf("%s", reflect.ValueOf(res).MapIndex(reflect.ValueOf(optionName)))}, nil
 }
 
 type coreModuleStatsReq struct {
@@ -78,15 +78,15 @@ type coreModuleStatsRes struct {
 }
 
 // CoreModuleStats returns the module stats
-func (c *Client) CoreModuleStats() (coreModuleStatsRes, error) {
+func (c *Client) CoreModuleStats() (*coreModuleStatsRes, error) {
 	req := &coreModuleStatsReq{
 		Method: "core.module_stats",
 		Token:  c.token,
 	}
 
-	var res coreModuleStatsRes
+	var res *coreModuleStatsRes
 	if err := c.call(req, &res); err != nil {
-		return coreModuleStatsRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -107,15 +107,15 @@ type coreReloadModulesRes struct {
 }
 
 // CoreReloadModules reloads framework modules
-func (c *Client) CoreReloadModules() (coreReloadModulesRes, error) {
+func (c *Client) CoreReloadModules() (*coreReloadModulesRes, error) {
 	req := &coreReloadModulesReq{
 		Method: "core.reload_modules",
 		Token:  c.token,
 	}
 
-	var res coreReloadModulesRes
+	var res *coreReloadModulesRes
 	if err := c.call(req, &res); err != nil {
-		return coreReloadModulesRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -131,15 +131,15 @@ type coreSaveRes struct {
 }
 
 // CoreSave saves current framework settings
-func (c *Client) CoreSave() (coreSaveRes, error) {
+func (c *Client) CoreSave() (*coreSaveRes, error) {
 	req := &coreSaveReq{
 		Method: "core.save",
 		Token:  c.token,
 	}
 
-	var res coreSaveRes
+	var res *coreSaveRes
 	if err := c.call(req, &res); err != nil {
-		return coreSaveRes{}, nil
+		return nil, err
 	}
 	return res, nil
 }
@@ -157,7 +157,7 @@ type coreSetgRes struct {
 }
 
 // CoreSetg sets a global datastore option
-func (c *Client) CoreSetg(optionName, optionValue string) (coreSetgRes, error) {
+func (c *Client) CoreSetg(optionName, optionValue string) (*coreSetgRes, error) {
 	req := &coreSetgReq{
 		Method:      "core.setg",
 		Token:       c.token,
@@ -165,9 +165,9 @@ func (c *Client) CoreSetg(optionName, optionValue string) (coreSetgRes, error) {
 		OptionValue: optionValue,
 	}
 
-	var res coreSetgRes
+	var res *coreSetgRes
 	if err := c.call(req, &res); err != nil {
-		return coreSetgRes{}, nil
+		return nil, err
 	}
 	return res, nil
 }
@@ -183,14 +183,14 @@ type coreStopRes struct {
 }
 
 // CoreStop stops the RPC service
-func (c *Client) CoreStop() (coreStopRes, error) {
+func (c *Client) CoreStop() (*coreStopRes, error) {
 	req := &coreStopReq{
 		Method: "core.stop",
 		Token:  c.token,
 	}
-	var res coreStopRes
+	var res *coreStopRes
 	if err := c.call(req, &res); err != nil {
-		return coreStopRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -207,16 +207,16 @@ type coreThreadKillRes struct {
 }
 
 // CoreThreadKill kills a framework thread
-func (c *Client) CoreThreadKill(threadId string) (coreThreadKillRes, error) {
+func (c *Client) CoreThreadKill(threadId string) (*coreThreadKillRes, error) {
 	req := &coreThreadKillReq{
 		Method:   "core.thread_kill",
 		Token:    c.token,
 		ThreadId: threadId,
 	}
 
-	var res coreThreadKillRes
+	var res *coreThreadKillRes
 	if err := c.call(req, &res); err != nil {
-		return coreThreadKillRes{}, nil
+		return nil, err
 	}
 	return res, nil
 }
@@ -235,15 +235,15 @@ type coreThreadListRes map[int]struct {
 }
 
 // CoreThreadList returns a list of framework threads
-func (c *Client) CoreThreadList() (coreThreadListRes, error) {
+func (c *Client) CoreThreadList() (*coreThreadListRes, error) {
 	req := &coreThreadListReq{
 		Method: "core.thread_list",
 		Token:  c.token,
 	}
 
-	var res coreThreadListRes
+	var res *coreThreadListRes
 	if err := c.call(req, &res); err != nil {
-		return coreThreadListRes{}, nil
+		return nil, err
 	}
 	return res, nil
 }
@@ -260,16 +260,16 @@ type coreUnsetgRes struct {
 }
 
 // CoreUnsetg unsets a global datastore option
-func (c *Client) CoreUnsetg(optionName string) (coreUnsetgRes, error) {
+func (c *Client) CoreUnsetg(optionName string) (*coreUnsetgRes, error) {
 	req := &coreUnsetgReq{
 		Method:     "core.unsetg",
 		Token:      c.token,
 		OptionName: optionName,
 	}
 
-	var res coreUnsetgRes
+	var res *coreUnsetgRes
 	if err := c.call(req, &res); err != nil {
-		return coreUnsetgRes{}, nil
+		return nil, err
 	}
 	return res, nil
 }
@@ -287,14 +287,14 @@ type coreVersionRes struct {
 }
 
 // CoreVersion returns the RPC service versions
-func (c *Client) CoreVersion() (coreVersionRes, error) {
+func (c *Client) CoreVersion() (*coreVersionRes, error) {
 	req := &coreVersionReq{
 		Method: "core.version",
 		Token:  c.token,
 	}
-	var res coreVersionRes
+	var res *coreVersionRes
 	if err := c.call(req, &res); err != nil {
-		return coreVersionRes{}, err
+		return nil, err
 	}
 	return res, nil
 }

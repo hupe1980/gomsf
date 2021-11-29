@@ -13,14 +13,14 @@ type consoleCreateRes struct {
 }
 
 // ConsoleCreate creates a new framework console instance
-func (c *Client) ConsoleCreate() (consoleCreateRes, error) {
+func (c *Client) ConsoleCreate() (*consoleCreateRes, error) {
 	req := &consoleCreateReq{
 		Method: "console.create",
 		Token:  c.token,
 	}
-	var res consoleCreateRes
+	var res *consoleCreateRes
 	if err := c.call(req, &res); err != nil {
-		return consoleCreateRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -37,15 +37,15 @@ type consoleDestroyRes struct {
 }
 
 // ConsoleDestroy deletes a framework console instance
-func (c *Client) ConsoleDestroy(consoleid string) (consoleDestroyRes, error) {
+func (c *Client) ConsoleDestroy(consoleid string) (*consoleDestroyRes, error) {
 	req := &consoleDestroyReq{
 		Method:    "console.destroy",
 		Token:     c.token,
 		ConsoleId: consoleid,
 	}
-	var res consoleDestroyRes
+	var res *consoleDestroyRes
 	if err := c.call(req, &res); err != nil {
-		return consoleDestroyRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -63,14 +63,14 @@ type consoleListRes map[string][]struct {
 }
 
 // ConsoleList returns a list of framework consoles
-func (c *Client) ConsoleList() (consoleListRes, error) {
+func (c *Client) ConsoleList() (*consoleListRes, error) {
 	req := &consoleListReq{
 		Method: "console.list",
 		Token:  c.token,
 	}
-	var res consoleListRes
+	var res *consoleListRes
 	if err := c.call(req, &res); err != nil {
-		return consoleListRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -89,15 +89,15 @@ type consoleReadRes struct {
 }
 
 // ConsoleRead returns the framework console output in raw form
-func (c *Client) ConsoleRead(consoleId string) (consoleReadRes, error) {
+func (c *Client) ConsoleRead(consoleId string) (*consoleReadRes, error) {
 	req := &consoleReadReq{
 		Method:    "console.read",
 		Token:     c.token,
 		ConsoleId: consoleId,
 	}
-	var res consoleReadRes
+	var res *consoleReadRes
 	if err := c.call(req, &res); err != nil {
-		return consoleReadRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -114,15 +114,15 @@ type consoleSessionDetachRes struct {
 }
 
 // ConsoleSessionDetach detaches a framework session
-func (c *Client) ConsoleSessionDetach(consoleId string) (consoleSessionDetachRes, error) {
+func (c *Client) ConsoleSessionDetach(consoleId string) (*consoleSessionDetachRes, error) {
 	req := &consoleSessionDetachReq{
 		Method:    "console.session_detach",
 		Token:     c.token,
 		ConsoleId: consoleId,
 	}
-	var res consoleSessionDetachRes
+	var res *consoleSessionDetachRes
 	if err := c.call(req, &res); err != nil {
-		return consoleSessionDetachRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -139,15 +139,15 @@ type consoleSessionKillRes struct {
 }
 
 // ConsoleSessionKill kills a framework session
-func (c *Client) ConsoleSessionKill(consoleId string) (consoleSessionKillRes, error) {
+func (c *Client) ConsoleSessionKill(consoleId string) (*consoleSessionKillRes, error) {
 	req := &consoleSessionKillReq{
 		Method:    "console.session_kill",
 		Token:     c.token,
 		ConsoleId: consoleId,
 	}
-	var res consoleSessionKillRes
+	var res *consoleSessionKillRes
 	if err := c.call(req, &res); err != nil {
-		return consoleSessionKillRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -165,16 +165,16 @@ type consoleTabsRes struct {
 }
 
 // ConsoleTabs returns the tab-completed version of your input (such as a module path)
-func (c *Client) ConsoleTabs(consoleId, inputLine string) (consoleTabsRes, error) {
+func (c *Client) ConsoleTabs(consoleId, inputLine string) (*consoleTabsRes, error) {
 	req := &consoleTabsReq{
 		Method:    "console.tabs",
 		Token:     c.token,
 		ConsoleId: consoleId,
 		InputLine: inputLine,
 	}
-	var res consoleTabsRes
+	var res *consoleTabsRes
 	if err := c.call(req, &res); err != nil {
-		return consoleTabsRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -192,16 +192,16 @@ type consoleWriteRes struct {
 }
 
 // ConsoleWrite sends an input (such as a command) to the framework console
-func (c *Client) ConsoleWrite(consoleId, command string) (consoleWriteRes, error) {
+func (c *Client) ConsoleWrite(consoleId, command string) (*consoleWriteRes, error) {
 	req := &consoleWriteReq{
 		Method:    "console.write",
 		Token:     c.token,
 		ConsoleId: consoleId,
 		Command:   command,
 	}
-	var res consoleWriteRes
+	var res *consoleWriteRes
 	if err := c.call(req, &res); err != nil {
-		return consoleWriteRes{}, err
+		return nil, err
 	}
 	return res, nil
 }

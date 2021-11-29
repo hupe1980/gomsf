@@ -10,165 +10,6 @@ const (
 	Evasion   ModuleType = "evasion"
 )
 
-type moduleExploitsReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method   string
-	Token    string
-}
-
-type moduleExploitsRes struct {
-	Modules []string `msgpack:"modules"`
-}
-
-type modulePostReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method   string
-	Token    string
-}
-
-type modulePostRes struct {
-	Modules []string `msgpack:"modules"`
-}
-
-type modulePayloadsReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method   string
-	Token    string
-}
-
-type modulePayloadsRes struct {
-	Modules []string `msgpack:"modules"`
-}
-
-type moduleEncodersReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method   string
-	Token    string
-}
-
-type moduleEncodersRes struct {
-	Modules []string `msgpack:"modules"`
-}
-
-type moduleNopsReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method   string
-	Token    string
-}
-
-type moduleNopsRes struct {
-	Modules []string `msgpack:"modules"`
-}
-
-type moduleInfoReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method     string
-	Token      string
-	ModuleType ModuleType
-	ModuleName string
-}
-
-type moduleInfoRes struct {
-	Name        string     `msgpack:"name"`
-	Description string     `msgpack:"description"`
-	License     string     `msgpack:"license"`
-	FilePath    string     `msgpack:"filepath"`
-	Version     string     `msgpack:"version"`
-	Rank        string     `msgpack:"rank"`
-	References  [][]string `msgpack:"references"`
-	Authors     []string   `msgpack:"authors"`
-}
-
-type moduleOptionsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method     string
-	Token      string
-	ModuleType ModuleType
-	ModuleName string
-}
-
-type moduleOptionsRes map[string]struct {
-	Type     string      `msgpack:"type"`
-	Required bool        `msgpack:"required"`
-	Advanced bool        `msgpack:"advanced"`
-	Evasion  bool        `msgpack:"evasion"`
-	Desc     string      `msgpack:"desc"`
-	Default  interface{} `msgpack:"default"`
-	Enums    []string    `msgpack:"enums,omitempty"`
-}
-
-type moduleCompatiblePayloadsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method     string
-	Token      string
-	ModuleName string
-}
-
-type moduleCompatiblePayloadsRes struct {
-	Payloads []string `msgpack:"payloads"`
-}
-
-type moduleTargetCompatiblePayloadsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method     string
-	Token      string
-	ModuleName string
-	ArchNumber uint32
-}
-
-type moduleTargetCompatiblePayloadsRes struct {
-	Payloads []string `msgpack:"payloads"`
-}
-
-type moduleCompatibleSessionsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method     string
-	Token      string
-	ModuleName string
-}
-
-type moduleCompatibleSessionsRes struct {
-	Sessions []string `msgpack:"sessions"`
-}
-
-type EncodingOptions struct {
-	Format       string // Encoding format
-	Badchars     string // Bad characters
-	Platform     string // Platform
-	Arch         string // Architecture
-	ECount       int    // Number of times to encode
-	Inject       bool   // Enable injection
-	Template     string // The template file (an executable)
-	TemplatePath string // Template path
-	Addshellcode string // Custom shellcode
-}
-
-type moduleEncodeReq struct {
-	_msgpack      struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method        string
-	Token         string
-	Data          string
-	EncoderModule string
-	Options       EncodingOptions
-}
-
-type moduleEncodeRes struct {
-	Encoded []byte `msgpack:"encoded"`
-}
-
-type moduleExecuteReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method     string
-	Token      string
-	ModuleType ModuleType
-	ModuleName string
-	Options    map[string]string
-}
-
-type moduleExecuteRes struct {
-	JobID uint32 `msgpack:"job_id"`
-}
-
 type moduleArchitecturesReq struct {
 	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method   string
@@ -188,6 +29,16 @@ func (c *Client) ModuleArchitectures() (*moduleArchitecturesRes, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+type moduleExploitsReq struct {
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method   string
+	Token    string
+}
+
+type moduleExploitsRes struct {
+	Modules []string `msgpack:"modules"`
 }
 
 func (c *Client) ModuleExploits() (*moduleExploitsRes, error) {
@@ -227,6 +78,108 @@ func (c *Client) ModuleAuxiliary() (*moduleAuxiliaryRes, error) {
 
 // CHECK
 
+// CompatibleEvasionPayloads
+type moduleCompatiblePayloadsReq struct {
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method     string
+	Token      string
+	ModuleName string
+}
+
+type moduleCompatiblePayloadsRes struct {
+	Payloads []string `msgpack:"payloads"`
+}
+
+// ModuleCompatiblePayloads returns the compatible payloads for a specific exploit
+func (c *Client) ModuleCompatiblePayloads(moduleName string) (*moduleCompatiblePayloadsRes, error) {
+	req := &moduleCompatiblePayloadsReq{
+		Method:     "module.compatible_payloads",
+		Token:      c.token,
+		ModuleName: moduleName,
+	}
+	var res *moduleCompatiblePayloadsRes
+	if err := c.call(req, &res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+type moduleCompatibleSessionsReq struct {
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method     string
+	Token      string
+	ModuleName string
+}
+
+type moduleCompatibleSessionsRes struct {
+	Sessions []string `msgpack:"sessions"`
+}
+
+// ModuleCompatibleSessions returns the compatible sessions for a specific post module
+func (c *Client) ModuleCompatibleSessions(moduleName string) (*moduleCompatibleSessionsRes, error) {
+	req := &moduleCompatibleSessionsReq{
+		Method:     "module.compatible_sessions",
+		Token:      c.token,
+		ModuleName: moduleName,
+	}
+	var res *moduleCompatibleSessionsRes
+	if err := c.call(req, &res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+type EncodingOptions struct {
+	Format       string `msgpack:"format,omitempty"`        // Encoding format
+	Badchars     string `msgpack:"badchars,omitempty"`      // Bad characters
+	Platform     string `msgpack:"platform,omitempty"`      // Platform
+	Arch         string `msgpack:"arch,omitempty"`          // Architecture
+	ECount       int    `msgpack:"ecount,omitempty"`        // Number of times to encode
+	Inject       bool   `msgpack:"inject,omitempty"`        // Enable injection
+	Template     string `msgpack:"template,omitempty"`      // The template file (an executable)
+	TemplatePath string `msgpack:"template_path,omitempty"` // Template path
+	Addshellcode string `msgpack:"addshellcode,omitempty"`  // Custom shellcode
+}
+
+type moduleEncodeReq struct {
+	_msgpack      struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method        string
+	Token         string
+	Data          string
+	EncoderModule string
+	Options       EncodingOptions
+}
+
+type moduleEncodeRes struct {
+	Encoded []byte `msgpack:"encoded"`
+}
+
+// ModuleEnoce encodes data with an encoder
+func (c *Client) ModuleEncode(data, encoderModule string, moduleOptions EncodingOptions) (*moduleEncodeRes, error) {
+	req := &moduleEncodeReq{
+		Method:        "module.encode",
+		Token:         c.token,
+		Data:          data,
+		EncoderModule: encoderModule,
+		Options:       moduleOptions,
+	}
+	var res *moduleEncodeRes
+	if err := c.call(req, &res); err != nil {
+		return nil, err
+	}
+	return res, nil
+}
+
+type modulePostReq struct {
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method   string
+	Token    string
+}
+
+type modulePostRes struct {
+	Modules []string `msgpack:"modules"`
+}
+
 func (c *Client) ModulePost() (*modulePostRes, error) {
 	req := &modulePostReq{
 		Method: "module.post",
@@ -237,6 +190,16 @@ func (c *Client) ModulePost() (*modulePostRes, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+type modulePayloadsReq struct {
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method   string
+	Token    string
+}
+
+type modulePayloadsRes struct {
+	Modules []string `msgpack:"modules"`
 }
 
 func (c *Client) ModulePayloads() (*modulePayloadsRes, error) {
@@ -251,6 +214,16 @@ func (c *Client) ModulePayloads() (*modulePayloadsRes, error) {
 	return res, nil
 }
 
+type moduleEncodersReq struct {
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method   string
+	Token    string
+}
+
+type moduleEncodersRes struct {
+	Modules []string `msgpack:"modules"`
+}
+
 func (c *Client) ModuleEncoders() (*moduleEncodersRes, error) {
 	req := &moduleEncodersReq{
 		Method: "module.encoders",
@@ -261,6 +234,16 @@ func (c *Client) ModuleEncoders() (*moduleEncodersRes, error) {
 		return nil, err
 	}
 	return res, nil
+}
+
+type moduleNopsReq struct {
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method   string
+	Token    string
+}
+
+type moduleNopsRes struct {
+	Modules []string `msgpack:"modules"`
 }
 
 func (c *Client) ModuleNops() (*moduleNopsRes, error) {
@@ -275,6 +258,26 @@ func (c *Client) ModuleNops() (*moduleNopsRes, error) {
 	return res, nil
 }
 
+type moduleInfoReq struct {
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method     string
+	Token      string
+	ModuleType ModuleType
+	ModuleName string
+}
+
+type moduleInfoRes struct {
+	Name        string     `msgpack:"name"`
+	Description string     `msgpack:"description"`
+	License     string     `msgpack:"license"`
+	FilePath    string     `msgpack:"filepath"`
+	Version     string     `msgpack:"version"`
+	Rank        string     `msgpack:"rank"`
+	References  [][]string `msgpack:"references"`
+	Authors     []string   `msgpack:"authors"`
+}
+
+// ModuleInfo returns the metadata for a module
 func (c *Client) ModuleInfo(moduleType ModuleType, moduleName string) (*moduleInfoRes, error) {
 	req := &moduleInfoReq{
 		Method:     "module.info",
@@ -287,6 +290,24 @@ func (c *Client) ModuleInfo(moduleType ModuleType, moduleName string) (*moduleIn
 		return nil, err
 	}
 	return res, nil
+}
+
+type moduleOptionsReq struct {
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method     string
+	Token      string
+	ModuleType ModuleType
+	ModuleName string
+}
+
+type moduleOptionsRes map[string]struct {
+	Type     string      `msgpack:"type"`
+	Required bool        `msgpack:"required"`
+	Advanced bool        `msgpack:"advanced"`
+	Evasion  bool        `msgpack:"evasion"`
+	Desc     string      `msgpack:"desc"`
+	Default  interface{} `msgpack:"default"`
+	Enums    []string    `msgpack:"enums,omitempty"`
 }
 
 func (c *Client) ModuleOptions(moduleType ModuleType, moduleName string) (*moduleOptionsRes, error) {
@@ -303,17 +324,16 @@ func (c *Client) ModuleOptions(moduleType ModuleType, moduleName string) (*modul
 	return res, nil
 }
 
-func (c *Client) ModuleCompatiblePayloads(moduleName string) (*moduleCompatiblePayloadsRes, error) {
-	req := &moduleCompatiblePayloadsReq{
-		Method:     "module.compatible_payloads",
-		Token:      c.token,
-		ModuleName: moduleName,
-	}
-	var res *moduleCompatiblePayloadsRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
-	}
-	return res, nil
+type moduleTargetCompatiblePayloadsReq struct {
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method     string
+	Token      string
+	ModuleName string
+	ArchNumber uint32
+}
+
+type moduleTargetCompatiblePayloadsRes struct {
+	Payloads []string `msgpack:"payloads"`
 }
 
 func (c *Client) ModuleTargetCompatiblePayloads(moduleName string, targetNumber uint32) (*moduleTargetCompatiblePayloadsRes, error) {
@@ -330,32 +350,17 @@ func (c *Client) ModuleTargetCompatiblePayloads(moduleName string, targetNumber 
 	return res, nil
 }
 
-func (c *Client) ModuleCompatibleSessions(moduleName string) (*moduleCompatibleSessionsRes, error) {
-	req := &moduleCompatibleSessionsReq{
-		Method:     "module.compatible_sessions",
-		Token:      c.token,
-		ModuleName: moduleName,
-	}
-	var res *moduleCompatibleSessionsRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
-	}
-	return res, nil
+type moduleExecuteReq struct {
+	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method     string
+	Token      string
+	ModuleType ModuleType
+	ModuleName string
+	Options    map[string]string
 }
 
-func (c *Client) ModuleEncode(data, encoderModule string, moduleOptions EncodingOptions) (*moduleEncodeRes, error) {
-	req := &moduleEncodeReq{
-		Method:        "module.encode",
-		Token:         c.token,
-		Data:          data,
-		EncoderModule: encoderModule,
-		Options:       moduleOptions,
-	}
-	var res *moduleEncodeRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
-	}
-	return res, nil
+type moduleExecuteRes struct {
+	JobID uint32 `msgpack:"job_id"`
 }
 
 func (c *Client) ModuleExecute(moduleType ModuleType, moduleName string, moduleOptions map[string]string) (*moduleExecuteRes, error) {

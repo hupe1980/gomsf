@@ -16,15 +16,15 @@ type jobInfoRes struct {
 }
 
 // JobInfo returns information about a job
-func (c *Client) JobInfo(jobID string) (jobInfoRes, error) {
+func (c *Client) JobInfo(jobID string) (*jobInfoRes, error) {
 	req := &jobInfoReq{
 		Method: "job.info",
 		Token:  c.token,
 		JobId:  jobID,
 	}
-	var res jobInfoRes
+	var res *jobInfoRes
 	if err := c.call(req, &res); err != nil {
-		return jobInfoRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -38,14 +38,14 @@ type jobListReq struct {
 type jobListRes map[string]string
 
 // JobList returns a list of jobs
-func (c *Client) JobList() (jobListRes, error) {
+func (c *Client) JobList() (*jobListRes, error) {
 	req := &jobListReq{
 		Method: "job.list",
 		Token:  c.token,
 	}
-	var res jobListRes
+	var res *jobListRes
 	if err := c.call(req, &res); err != nil {
-		return jobListRes{}, err
+		return nil, err
 	}
 	return res, nil
 }
@@ -62,15 +62,15 @@ type jobStopRes struct {
 }
 
 // JobStop stops a job
-func (c *Client) JobStop(jobID string) (jobStopRes, error) {
+func (c *Client) JobStop(jobID string) (*jobStopRes, error) {
 	req := &jobStopReq{
 		Method: "job.stop",
 		Token:  c.token,
 		JobID:  jobID,
 	}
-	var res jobStopRes
+	var res *jobStopRes
 	if err := c.call(req, &res); err != nil {
-		return jobStopRes{}, err
+		return nil, err
 	}
 	return res, nil
 }

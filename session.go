@@ -1,67 +1,5 @@
 package gomsf
 
-import (
-	"strconv"
-)
-
-type sessionListReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method   string
-	Token    string
-}
-
-type SessionListRes map[uint32]struct {
-	Type        string `msgpack:"type"`
-	TunnelLocal string `msgpack:"tunnel_local"`
-	TunnelPeer  string `msgpack:"tunnel_peer"`
-	ViaExploit  string `msgpack:"via_exploit"`
-	ViaPayload  string `msgpack:"via_payload"`
-	Description string `msgpack:"desc"`
-	Info        string `msgpack:"info"`
-	Workspace   string `msgpack:"workspace"`
-	SessionHost string `msgpack:"session_host"`
-	SessionPort int    `msgpack:"session_port"`
-	Username    string `msgpack:"username"`
-	UUID        string `msgpack:"uuid"`
-	ExploitUUID string `msgpack:"exploit_uuid"`
-}
-
-type sessionWriteReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method    string
-	Token     string
-	SessionID uint32
-	Command   string
-}
-
-type sessionWriteRes struct {
-	WriteCount string `msgpack:"write_count"`
-}
-
-type sessionReadReq struct {
-	_msgpack    struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method      string
-	Token       string
-	SessionID   uint32
-	ReadPointer string
-}
-
-type sessionReadRes struct {
-	Seq  uint32 `msgpack:"seq"`
-	Data string `msgpack:"data"`
-}
-
-type sessionRingLastReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method    string
-	Token     string
-	SessionID uint32
-}
-
-type sessionRingLastRes struct {
-	Seq uint32 `msgpack:"seq"`
-}
-
 type sessionMeterpreterWriteReq struct {
 	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
@@ -113,18 +51,6 @@ type sessionMeterpreterKillReq struct {
 
 type sessionMeterpreterKillRes sessionMeterpreterWriteRes
 
-type sessionMeterpreterTabsReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
-	Method    string
-	Token     string
-	SessionID uint32
-	InputLine string
-}
-
-type sessionMeterpreterTabsRes struct {
-	Tabs []string `msgpack:"tabs"`
-}
-
 type sessionCompatibleModulesReq struct {
 	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
 	Method    string
@@ -168,6 +94,28 @@ type sessionRingPutRes struct {
 	WriteCount uint32 `msgpack:"write_count"`
 }
 
+type sessionListReq struct {
+	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method   string
+	Token    string
+}
+
+type SessionListRes map[uint32]struct {
+	Type        string `msgpack:"type"`
+	TunnelLocal string `msgpack:"tunnel_local"`
+	TunnelPeer  string `msgpack:"tunnel_peer"`
+	ViaExploit  string `msgpack:"via_exploit"`
+	ViaPayload  string `msgpack:"via_payload"`
+	Description string `msgpack:"desc"`
+	Info        string `msgpack:"info"`
+	Workspace   string `msgpack:"workspace"`
+	SessionHost string `msgpack:"session_host"`
+	SessionPort int    `msgpack:"session_port"`
+	Username    string `msgpack:"username"`
+	UUID        string `msgpack:"uuid"`
+	ExploitUUID string `msgpack:"exploit_uuid"`
+}
+
 func (c *Client) SessionList() (SessionListRes, error) {
 	req := &sessionListReq{
 		Method: "session.list",
@@ -183,30 +131,27 @@ func (c *Client) SessionList() (SessionListRes, error) {
 
 }
 
-func (c *Client) SessionReadPointer(session uint32) (uint32, error) {
-	req := &sessionRingLastReq{
-		Method:    "session.ring_last",
-		Token:     c.token,
-		SessionID: session,
-	}
-
-	var sesRingLast sessionRingLastRes
-	if err := c.call(req, &sesRingLast); err != nil {
-		return 0, err
-	}
-
-	return sesRingLast.Seq, nil
+type sessionShellWriteReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method    string
+	Token     string
+	SessionID uint32
+	Command   string
 }
 
-func (c *Client) SessionWrite(session uint32, command string) error {
-	req := &sessionWriteReq{
+type sessionShellWriteRes struct {
+	WriteCount string `msgpack:"write_count"`
+}
+
+func (c *Client) SessionShellWrite(session uint32, command string) error {
+	req := &sessionShellWriteReq{
 		Method:    "session.shell_write",
 		Token:     c.token,
 		SessionID: session,
 		Command:   command,
 	}
 
-	var res sessionWriteRes
+	var res sessionShellWriteRes
 	if err := c.call(req, &res); err != nil {
 		return err
 	}
@@ -214,15 +159,28 @@ func (c *Client) SessionWrite(session uint32, command string) error {
 	return nil
 }
 
-func (c *Client) SessionRead(session uint32, readPointer uint32) (string, error) {
-	req := &sessionReadReq{
+type sessionShellReadReq struct {
+	_msgpack    struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method      string
+	Token       string
+	SessionID   uint32
+	ReadPointer uint32
+}
+
+type sessionShellReadRes struct {
+	Seq  uint32 `msgpack:"seq"`
+	Data string `msgpack:"data"`
+}
+
+func (c *Client) SessionShellRead(session uint32, readPointer uint32) (string, error) {
+	req := &sessionShellReadReq{
 		Method:      "session.shell_read",
 		Token:       c.token,
 		SessionID:   session,
-		ReadPointer: strconv.FormatUint(uint64(readPointer), 10),
+		ReadPointer: readPointer,
 	}
 
-	var res sessionReadRes
+	var res sessionShellReadRes
 	if err := c.call(req, &res); err != nil {
 		return "", err
 	}
@@ -304,6 +262,18 @@ func (c *Client) SessionMeterpreterSessionKill(session uint32) (sessionMeterpret
 	return res, nil
 }
 
+type sessionMeterpreterTabsReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method    string
+	Token     string
+	SessionID uint32
+	InputLine string
+}
+
+type sessionMeterpreterTabsRes struct {
+	Tabs []string `msgpack:"tabs"`
+}
+
 func (c *Client) SessionMeterpreterTabs(session uint32, inputLine string) (sessionMeterpreterTabsRes, error) {
 	req := &sessionMeterpreterTabsReq{
 		Method:    "session.meterpreter_tabs",
@@ -361,6 +331,17 @@ func (c *Client) SessionRingClear(session uint32) (sessionRingClearRes, error) {
 		return sessionRingClearRes{}, err
 	}
 	return res, nil
+}
+
+type sessionRingLastReq struct {
+	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused
+	Method    string
+	Token     string
+	SessionID uint32
+}
+
+type sessionRingLastRes struct {
+	Seq uint32 `msgpack:"seq"`
 }
 
 func (c *Client) SessionRingLast(session uint32) (sessionRingLastRes, error) {

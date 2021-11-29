@@ -27,7 +27,7 @@ func (c *Client) Login(user, pass string) error {
 	if err := c.call(req, &res); err != nil {
 		return err
 	}
-	if res.Result != "success" {
+	if res.Result != "success" || res.Token == "" {
 		return errors.New("authentication failed")
 	}
 
@@ -38,7 +38,7 @@ func (c *Client) Login(user, pass string) error {
 	return nil
 }
 
-// ReLogin attempts to login again with the last known user name and password.
+// ReLogin attempts to login again with the last known user name and password
 func (c *Client) ReLogin() error {
 	return c.Login(c.user, c.pass)
 }
