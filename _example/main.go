@@ -25,9 +25,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("Connected to Metasploit...\nVersion: %s\nRuby: %s\nAPI: %s\n\n\n", version.Version, version.Ruby, version.Api)
+	fmt.Printf("Version: %s\nRuby: %s\nAPI: %s\n\n\n", version.Version, version.Ruby, version.Api)
 
-	enocdeResult, err := client.ModuleEncode("AAAA", "x86/shikata_ga_nai", gomsf.EncodingOptions{Format: "c"})
+	enocdeResult, err := client.ModuleEncode("AAAA", "x86/shikata_ga_nai", gomsf.EncodingOptions{
+		Format: "c",
+	})
 	if err != nil {
 		panic(err)
 	}
