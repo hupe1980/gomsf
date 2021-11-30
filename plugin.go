@@ -1,82 +1,46 @@
 package gomsf
 
-type PluginLoadReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method     string
-	Token      string
-	PluginName string
-	Options    map[string]string
+import (
+	"fmt"
+
+	"github.com/hupe1980/gomsf/rpc"
+)
+
+type PluginManager struct {
+	rpc *rpc.RPC
 }
 
-type PluginLoadRes struct {
-	Result string `msgpack:"result"`
-}
-
-// PluginLoad loads a plugin
-func (c *Client) PluginLoad(pluginName string, pluginOptions map[string]string) (*PluginLoadRes, error) {
-	req := &PluginLoadReq{
-		Method:     "plugin.load",
-		Token:      c.token,
-		PluginName: pluginName,
-		Options:    pluginOptions,
-	}
-
-	var res *PluginLoadRes
-	if err := c.call(req, &res); err != nil {
+func (pm *PluginManager) List() ([]string, error) {
+	r, err := pm.rpc.Plugin.Loaded()
+	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	return r.Plugins, nil
 }
 
-type PluginLoadedReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
-}
-
-type PluginLoadedRes struct {
-	Plugins []string `msgpack:"plugins"`
-}
-
-// PluginLoaded returns a list of loaded plugins
-func (c *Client) PluginLoaded() (*PluginLoadedRes, error) {
-	req := &PluginLoadedReq{
-		Method: "plugin.loaded",
-		Token:  c.token,
+func (pm *PluginManager) Load(name string, options map[string]string) error {
+	r, err := pm.rpc.Plugin.Load(name, options)
+	if err != nil {
+		return err
 	}
 
-	var res *PluginLoadedRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
+	if r.Result == rpc.FAILURE {
+		return fmt.Errorf("cannot load plugin %s", name)
 	}
 
-	return res, nil
+	return nil
 }
 
-type PluginUnLoadReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method     string
-	Token      string
-	PluginName string
-}
-
-type PluginUnLoadRes struct {
-	Result string `msgpack:"result"`
-}
-
-// PluginUnload unloads a plugin
-func (c *Client) PluginUnLoad(pluginName string) (*PluginUnLoadRes, error) {
-	req := &PluginUnLoadReq{
-		Method:     "plugin.unload",
-		Token:      c.token,
-		PluginName: pluginName,
+func (pm *PluginManager) UnLoad(name string) error {
+	r, err := pm.rpc.Plugin.UnLoad(name)
+	if err != nil {
+		return err
 	}
 
-	var res *PluginUnLoadRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
+	if r.Result == rpc.FAILURE {
+		return fmt.Errorf("cannot unload plugin %s", name)
 	}
 
-	return res, nil
+	return nil
 }

@@ -29,7 +29,6 @@ linters:
     - exportloopref
     - exhaustive
     - goconst
-    - gocritic
     - gofmt
     - goimports
     - gomnd

@@ -1,223 +1,128 @@
 package gomsf
 
-type ConsoleCreateReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
+import (
+	"fmt"
+	"strings"
+
+	"github.com/hupe1980/gomsf/rpc"
+)
+
+type Console struct {
+	id  string
+	rpc *rpc.RPC
 }
 
-type ConsoleCreateRes struct {
-	ID     string `msgpack:"id"`
-	Prompt string `msgpack:"prompt"`
-	Busy   bool   `msgpack:"busy"`
-}
+// NewConsole initializes a msf console
+func NewConsole(rpc *rpc.RPC, consoleID string) (*Console, error) {
+	if consoleID == "" {
+		r, err := rpc.Console.Create()
+		if err != nil {
+			return nil, err
+		}
 
-// ConsoleCreate creates a new framework console instance
-func (c *Client) ConsoleCreate() (*ConsoleCreateRes, error) {
-	req := &ConsoleCreateReq{
-		Method: "console.create",
-		Token:  c.token,
+		consoleID = r.ID
 	}
 
-	var res *ConsoleCreateRes
-	if err := c.call(req, &res); err != nil {
+	return &Console{
+		id:  consoleID,
+		rpc: rpc,
+	}, nil
+}
+
+// Read reads data from the console
+func (c *Console) Read() (*rpc.ConsoleReadRes, error) {
+	return c.rpc.Console.Read(c.id)
+}
+
+// Write writes data to the console.
+func (c *Console) Write(command string) error {
+	if !strings.HasSuffix(command, "\n") {
+		command = fmt.Sprintf("%s\n", command)
+	}
+
+	if _, err := c.rpc.Console.Write(c.id, command); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SessionKill kills all active meterpreter or shell sessions
+func (c *Console) SessionKill() error {
+	r, err := c.rpc.Console.SessionKill(c.id)
+	if err != nil {
+		return err
+	}
+
+	if r.Result == rpc.FAILURE {
+		return fmt.Errorf("cannot kill sessions for console %s", c.id)
+	}
+
+	return nil
+}
+
+// SessionDetach detachs the current meterpreter or shell session
+func (c *Console) SessionDetach() error {
+	r, err := c.rpc.Console.SessionDetach(c.id)
+	if err != nil {
+		return err
+	}
+
+	if r.Result == rpc.FAILURE {
+		return fmt.Errorf("cannot detatch session for  %s", c.id)
+	}
+
+	return nil
+}
+
+func (c *Console) Tabs(line string) ([]string, error) {
+	r, err := c.rpc.Console.Tabs(c.id, line)
+	if err != nil {
 		return nil, err
 	}
 
-	return res, nil
+	return r.Tabs, nil
 }
 
-type ConsoleDestroyReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method    string
-	Token     string
-	ConsoleID string
-}
+// Destroy destroys the console
+func (c *Console) Destroy() error {
+	r, err := c.rpc.Console.Destroy(c.id)
 
-type ConsoleDestroyRes struct {
-	Result string `msgpack:"result"`
-}
-
-// ConsoleDestroy deletes a framework console instance
-func (c *Client) ConsoleDestroy(consoleID string) (*ConsoleDestroyRes, error) {
-	req := &ConsoleDestroyReq{
-		Method:    "console.destroy",
-		Token:     c.token,
-		ConsoleID: consoleID,
+	if err != nil {
+		return err
 	}
 
-	var res *ConsoleDestroyRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
+	if r.Result == rpc.FAILURE {
+		return fmt.Errorf("cannot destroy console %s", c.id)
 	}
 
-	return res, nil
+	return nil
 }
 
-type ConsoleListReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
+type ConsoleManager struct {
+	rpc *rpc.RPC
 }
 
-type ConsoleListRes map[string][]struct {
-	ID     string `msgpack:"id"`
-	Prompt string `msgpack:"prompt"`
-	Busy   bool   `msgpack:"busy"`
+// List lists active consoles
+func (cm *ConsoleManager) List() (*rpc.ConsoleListRes, error) {
+	return cm.rpc.Console.List()
 }
 
-// ConsoleList returns a list of framework consoles
-func (c *Client) ConsoleList() (*ConsoleListRes, error) {
-	req := &ConsoleListReq{
-		Method: "console.list",
-		Token:  c.token,
+// Console connects to an active console otherwise creates a new console
+func (cm *ConsoleManager) Console(consoleID string) (*Console, error) {
+	return NewConsole(cm.rpc, consoleID)
+}
+
+// Destroy destroys an active console
+func (cm *ConsoleManager) Destroy(consoleID string) error {
+	r, err := cm.rpc.Console.Destroy(consoleID)
+	if err != nil {
+		return err
 	}
 
-	var res *ConsoleListRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
+	if r.Result == rpc.FAILURE {
+		return fmt.Errorf("cannot destroy console %s", consoleID)
 	}
 
-	return res, nil
-}
-
-type ConsoleReadReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method    string
-	Token     string
-	ConsoleID string
-}
-
-type ConsoleReadRes struct {
-	Data   string `msgpack:"data"`
-	Prompt string `msgpack:"prompt"`
-	Busy   bool   `msgpack:"busy"`
-}
-
-// ConsoleRead returns the framework console output in raw form
-func (c *Client) ConsoleRead(consoleID string) (*ConsoleReadRes, error) {
-	req := &ConsoleReadReq{
-		Method:    "console.read",
-		Token:     c.token,
-		ConsoleID: consoleID,
-	}
-
-	var res *ConsoleReadRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
-
-type ConsoleSessionDetachReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method    string
-	Token     string
-	ConsoleID string
-}
-
-type ConsoleSessionDetachRes struct {
-	Result string `msgpack:"result"`
-}
-
-// ConsoleSessionDetach detaches a framework session
-func (c *Client) ConsoleSessionDetach(consoleID string) (*ConsoleSessionDetachRes, error) {
-	req := &ConsoleSessionDetachReq{
-		Method:    "console.session_detach",
-		Token:     c.token,
-		ConsoleID: consoleID,
-	}
-
-	var res *ConsoleSessionDetachRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
-
-type ConsoleSessionKillReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method    string
-	Token     string
-	ConsoleID string
-}
-
-type ConsoleSessionKillRes struct {
-	Result string `msgpack:"result"`
-}
-
-// ConsoleSessionKill kills a framework session
-func (c *Client) ConsoleSessionKill(consoleID string) (*ConsoleSessionKillRes, error) {
-	req := &ConsoleSessionKillReq{
-		Method:    "console.session_kill",
-		Token:     c.token,
-		ConsoleID: consoleID,
-	}
-
-	var res *ConsoleSessionKillRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
-
-type ConsoleTabsReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method    string
-	Token     string
-	ConsoleID string
-	InputLine string
-}
-
-type ConsoleTabsRes struct {
-	Tabs []string `msgpack:"tabs"`
-}
-
-// ConsoleTabs returns the tab-completed version of your input (such as a module path)
-func (c *Client) ConsoleTabs(consoleID, inputLine string) (*ConsoleTabsRes, error) {
-	req := &ConsoleTabsReq{
-		Method:    "console.tabs",
-		Token:     c.token,
-		ConsoleID: consoleID,
-		InputLine: inputLine,
-	}
-
-	var res *ConsoleTabsRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
-
-type ConsoleWriteReq struct {
-	_msgpack  struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method    string
-	Token     string
-	ConsoleID string
-	Command   string
-}
-
-type ConsoleWriteRes struct {
-	Wrote uint32 `msgpack:"wrote"`
-}
-
-// ConsoleWrite sends an input (such as a command) to the framework console
-func (c *Client) ConsoleWrite(consoleID, command string) (*ConsoleWriteRes, error) {
-	req := &ConsoleWriteReq{
-		Method:    "console.write",
-		Token:     c.token,
-		ConsoleID: consoleID,
-		Command:   command,
-	}
-
-	var res *ConsoleWriteRes
-	if err := c.call(req, &res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
+	return nil
 }

@@ -11,6 +11,7 @@ import (
 	"reflect"
 	"time"
 
+	"github.com/hupe1980/gomsf/rpc"
 	"github.com/vmihailenco/msgpack/v5"
 )
 
@@ -21,6 +22,13 @@ type Client struct {
 	url        string
 	apiVersion string
 	client     *http.Client
+	rpc        *rpc.RPC
+	Auth       *AuthManager
+	Consoles   *ConsoleManager
+	Core       *CoreManager
+	Health     *HealthManager
+	Plugins    *PluginManager
+	Jobs       *JobManager
 }
 
 type ClientOptions struct {
@@ -59,15 +67,69 @@ func New(address string, optFns ...func(o *ClientOptions)) (*Client, error) {
 		client:     client,
 	}
 
+	c.rpc = rpc.NewRPC(c)
+
+	c.Auth = &AuthManager{rpc: c.rpc}
+	c.Consoles = &ConsoleManager{rpc: c.rpc}
+	c.Core = &CoreManager{rpc: c.rpc}
+	c.Health = &HealthManager{rpc: c.rpc}
+	c.Plugins = &PluginManager{rpc: c.rpc}
+	c.Jobs = &JobManager{rpc: c.rpc}
+
 	return c, nil
 }
 
-func (c *Client) HasToken() bool {
+func (c *Client) Authenticated() bool {
 	return c.token != ""
 }
 
 func (c *Client) APIVersion() string {
 	return c.apiVersion
+}
+
+func (c *Client) Call(req, res interface{}) error {
+	return c.call(req, res)
+}
+
+func (c *Client) Token() string {
+	return c.token
+}
+
+func (c *Client) HealthCheck() error {
+	return c.Health.Check()
+}
+
+// Login logs in by calling the 'auth.login' API. The authentication token will expire after 5
+// minutes, but will automatically be rewnewed when you make a new RPC request.
+func (c *Client) Login(user, pass string) error {
+	token, err := c.Auth.Login(user, pass)
+	if err != nil {
+		return err
+	}
+
+	c.user = user
+	c.pass = pass
+	c.token = token
+
+	return nil
+}
+
+// ReLogin attempts to login again with the last known user name and password
+func (c *Client) ReLogin() error {
+	return c.Login(c.user, c.pass)
+}
+
+func (c *Client) Logout() error {
+	err := c.Auth.Logout()
+	if err != nil {
+		return err
+	}
+
+	c.user = ""
+	c.pass = ""
+	c.token = ""
+
+	return nil
 }
 
 func (c *Client) call(req, res interface{}) error {
@@ -79,7 +141,10 @@ func (c *Client) call(req, res interface{}) error {
 	}
 
 	buf := new(bytes.Buffer)
-	if err := msgpack.NewEncoder(buf).Encode(req); err != nil {
+	enc := msgpack.NewEncoder(buf)
+	enc.UseArrayEncodedStructs(true)
+
+	if err := enc.Encode(req); err != nil {
 		return err
 	}
 

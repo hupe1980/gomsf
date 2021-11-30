@@ -1,4 +1,8 @@
-package gomsf
+package rpc
+
+type module struct {
+	client Client
+}
 
 type ModuleType string
 
@@ -11,22 +15,21 @@ const (
 )
 
 type ModuleArchitecturesReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
+	Method string
+	Token  string
 }
 
 type ModuleArchitecturesRes []string
 
-// ModuleArchitectures returns a list of architecture names
-func (c *Client) ModuleArchitectures() (*ModuleArchitecturesRes, error) {
+// Architectures returns a list of architecture names
+func (m *module) Architectures() (*ModuleArchitecturesRes, error) {
 	req := &ModuleArchitecturesReq{
 		Method: "module.architectures",
-		Token:  c.token,
+		Token:  m.client.Token(),
 	}
 
 	var res *ModuleArchitecturesRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -34,23 +37,22 @@ func (c *Client) ModuleArchitectures() (*ModuleArchitecturesRes, error) {
 }
 
 type ModuleExploitsReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
+	Method string
+	Token  string
 }
 
 type ModuleExploitsRes struct {
 	Modules []string `msgpack:"modules"`
 }
 
-func (c *Client) ModuleExploits() (*ModuleExploitsRes, error) {
+func (m *module) Exploits() (*ModuleExploitsRes, error) {
 	req := &ModuleExploitsReq{
 		Method: "module.exploits",
-		Token:  c.token,
+		Token:  m.client.Token(),
 	}
 
 	var res *ModuleExploitsRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -58,9 +60,8 @@ func (c *Client) ModuleExploits() (*ModuleExploitsRes, error) {
 }
 
 type ModuleAuxiliaryReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
+	Method string
+	Token  string
 }
 
 type ModuleAuxiliaryRes struct {
@@ -68,14 +69,14 @@ type ModuleAuxiliaryRes struct {
 }
 
 // ModuleAuxiliary returns a list of auxiliary module names
-func (c *Client) ModuleAuxiliary() (*ModuleAuxiliaryRes, error) {
+func (m *module) Auxiliary() (*ModuleAuxiliaryRes, error) {
 	req := &ModuleAuxiliaryReq{
 		Method: "module.auxiliary",
-		Token:  c.token,
+		Token:  m.client.Token(),
 	}
 
 	var res *ModuleAuxiliaryRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -86,7 +87,6 @@ func (c *Client) ModuleAuxiliary() (*ModuleAuxiliaryRes, error) {
 
 // CompatibleEvasionPayloads
 type ModuleCompatiblePayloadsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method     string
 	Token      string
 	ModuleName string
@@ -97,15 +97,15 @@ type ModuleCompatiblePayloadsRes struct {
 }
 
 // ModuleCompatiblePayloads returns the compatible payloads for a specific exploit
-func (c *Client) ModuleCompatiblePayloads(moduleName string) (*ModuleCompatiblePayloadsRes, error) {
+func (m *module) CompatiblePayloads(moduleName string) (*ModuleCompatiblePayloadsRes, error) {
 	req := &ModuleCompatiblePayloadsReq{
 		Method:     "module.compatible_payloads",
-		Token:      c.token,
+		Token:      m.client.Token(),
 		ModuleName: moduleName,
 	}
 
 	var res *ModuleCompatiblePayloadsRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -113,7 +113,6 @@ func (c *Client) ModuleCompatiblePayloads(moduleName string) (*ModuleCompatibleP
 }
 
 type ModuleCompatibleSessionsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method     string
 	Token      string
 	ModuleName string
@@ -124,15 +123,15 @@ type ModuleCompatibleSessionsRes struct {
 }
 
 // ModuleCompatibleSessions returns the compatible sessions for a specific post module
-func (c *Client) ModuleCompatibleSessions(moduleName string) (*ModuleCompatibleSessionsRes, error) {
+func (m *module) CompatibleSessions(moduleName string) (*ModuleCompatibleSessionsRes, error) {
 	req := &ModuleCompatibleSessionsReq{
 		Method:     "module.compatible_sessions",
-		Token:      c.token,
+		Token:      m.client.Token(),
 		ModuleName: moduleName,
 	}
 
 	var res *ModuleCompatibleSessionsRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -152,7 +151,6 @@ type EncodingOptions struct {
 }
 
 type ModuleEncodeReq struct {
-	_msgpack      struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method        string
 	Token         string
 	Data          string
@@ -164,18 +162,18 @@ type ModuleEncodeRes struct {
 	Encoded []byte `msgpack:"encoded"`
 }
 
-// ModuleEnoce encodes data with an encoder
-func (c *Client) ModuleEncode(data, encoderModule string, moduleOptions *EncodingOptions) (*ModuleEncodeRes, error) {
+// Encode encodes data with an encoder
+func (m *module) Encode(data, encoderModule string, moduleOptions *EncodingOptions) (*ModuleEncodeRes, error) {
 	req := &ModuleEncodeReq{
 		Method:        "module.encode",
-		Token:         c.token,
+		Token:         m.client.Token(),
 		Data:          data,
 		EncoderModule: encoderModule,
 		Options:       moduleOptions,
 	}
 
 	var res *ModuleEncodeRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -183,23 +181,22 @@ func (c *Client) ModuleEncode(data, encoderModule string, moduleOptions *Encodin
 }
 
 type ModulePostReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
+	Method string
+	Token  string
 }
 
 type ModulePostRes struct {
 	Modules []string `msgpack:"modules"`
 }
 
-func (c *Client) ModulePost() (*ModulePostRes, error) {
+func (m *module) Post() (*ModulePostRes, error) {
 	req := &ModulePostReq{
 		Method: "module.post",
-		Token:  c.token,
+		Token:  m.client.Token(),
 	}
 
 	var res *ModulePostRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -207,23 +204,22 @@ func (c *Client) ModulePost() (*ModulePostRes, error) {
 }
 
 type ModulePayloadsReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
+	Method string
+	Token  string
 }
 
 type ModulePayloadsRes struct {
 	Modules []string `msgpack:"modules"`
 }
 
-func (c *Client) ModulePayloads() (*ModulePayloadsRes, error) {
+func (m *module) Payloads() (*ModulePayloadsRes, error) {
 	req := &ModulePayloadsReq{
 		Method: "module.payloads",
-		Token:  c.token,
+		Token:  m.client.Token(),
 	}
 
 	var res *ModulePayloadsRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -231,23 +227,22 @@ func (c *Client) ModulePayloads() (*ModulePayloadsRes, error) {
 }
 
 type ModuleEncodersReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
+	Method string
+	Token  string
 }
 
 type ModuleEncodersRes struct {
 	Modules []string `msgpack:"modules"`
 }
 
-func (c *Client) ModuleEncoders() (*ModuleEncodersRes, error) {
+func (m *module) Encoders() (*ModuleEncodersRes, error) {
 	req := &ModuleEncodersReq{
 		Method: "module.encoders",
-		Token:  c.token,
+		Token:  m.client.Token(),
 	}
 
 	var res *ModuleEncodersRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -255,23 +250,22 @@ func (c *Client) ModuleEncoders() (*ModuleEncodersRes, error) {
 }
 
 type ModuleNopsReq struct {
-	_msgpack struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
-	Method   string
-	Token    string
+	Method string
+	Token  string
 }
 
 type ModuleNopsRes struct {
 	Modules []string `msgpack:"modules"`
 }
 
-func (c *Client) ModuleNops() (*ModuleNopsRes, error) {
+func (m *module) Nops() (*ModuleNopsRes, error) {
 	req := &ModuleNopsReq{
 		Method: "module.nops",
-		Token:  c.token,
+		Token:  m.client.Token(),
 	}
 
 	var res *ModuleNopsRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -279,7 +273,6 @@ func (c *Client) ModuleNops() (*ModuleNopsRes, error) {
 }
 
 type ModuleInfoReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method     string
 	Token      string
 	ModuleType ModuleType
@@ -297,17 +290,17 @@ type ModuleInfoRes struct {
 	Authors     []string   `msgpack:"authors"`
 }
 
-// ModuleInfo returns the metadata for a module
-func (c *Client) ModuleInfo(moduleType ModuleType, moduleName string) (*ModuleInfoRes, error) {
+// Info returns the metadata for a module
+func (m *module) Info(moduleType ModuleType, moduleName string) (*ModuleInfoRes, error) {
 	req := &ModuleInfoReq{
 		Method:     "module.info",
-		Token:      c.token,
+		Token:      m.client.Token(),
 		ModuleType: moduleType,
 		ModuleName: moduleName,
 	}
 
 	var res *ModuleInfoRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -315,7 +308,6 @@ func (c *Client) ModuleInfo(moduleType ModuleType, moduleName string) (*ModuleIn
 }
 
 type ModuleOptionsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method     string
 	Token      string
 	ModuleType ModuleType
@@ -332,16 +324,16 @@ type ModuleOptionsRes map[string]struct {
 	Enums    []string    `msgpack:"enums,omitempty"`
 }
 
-func (c *Client) ModuleOptions(moduleType ModuleType, moduleName string) (*ModuleOptionsRes, error) {
+func (m *module) Options(moduleType ModuleType, moduleName string) (*ModuleOptionsRes, error) {
 	req := &ModuleOptionsReq{
 		Method:     "module.options",
-		Token:      c.token,
+		Token:      m.client.Token(),
 		ModuleType: moduleType,
 		ModuleName: moduleName,
 	}
 
 	var res *ModuleOptionsRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -349,7 +341,6 @@ func (c *Client) ModuleOptions(moduleType ModuleType, moduleName string) (*Modul
 }
 
 type ModuleTargetCompatiblePayloadsReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method     string
 	Token      string
 	ModuleName string
@@ -360,16 +351,16 @@ type ModuleTargetCompatiblePayloadsRes struct {
 	Payloads []string `msgpack:"payloads"`
 }
 
-func (c *Client) ModuleTargetCompatiblePayloads(moduleName string, targetNumber uint32) (*ModuleTargetCompatiblePayloadsRes, error) {
+func (m *module) TargetCompatiblePayloads(moduleName string, targetNumber uint32) (*ModuleTargetCompatiblePayloadsRes, error) {
 	req := &ModuleTargetCompatiblePayloadsReq{
 		Method:     "module.target_compatible_payloads",
-		Token:      c.token,
+		Token:      m.client.Token(),
 		ModuleName: moduleName,
 		ArchNumber: targetNumber,
 	}
 
 	var res *ModuleTargetCompatiblePayloadsRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -399,7 +390,6 @@ func (e *ModuleOptions) SetBoolOption(name string, value bool) {
 }
 
 type ModuleExecuteReq struct {
-	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method     string
 	Token      string
 	ModuleType ModuleType
@@ -412,17 +402,17 @@ type ModuleExecuteRes struct {
 	UUID  string `msgpack:"uuid"`
 }
 
-func (c *Client) ModuleExecute(moduleType ModuleType, moduleName string, options *ModuleOptions) (*ModuleExecuteRes, error) {
+func (m *module) Execute(moduleType ModuleType, moduleName string, options *ModuleOptions) (*ModuleExecuteRes, error) {
 	req := &ModuleExecuteReq{
 		Method:     "module.execute",
-		Token:      c.token,
+		Token:      m.client.Token(),
 		ModuleType: moduleType,
 		ModuleName: moduleName,
 		Options:    options.Options,
 	}
 
 	var res *ModuleExecuteRes
-	if err := c.call(req, &res); err != nil {
+	if err := m.client.Call(req, &res); err != nil {
 		return nil, err
 	}
 
