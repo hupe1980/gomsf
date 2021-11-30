@@ -46,11 +46,12 @@ func main() {
 	fmt.Printf("Name: %s\n", infoResult.Name)
 	fmt.Printf("Rank: %s\n", infoResult.Rank)
 
-	executeResult, err := client.ModuleExecute(gomsf.Exploit, "multi/handler", map[string]interface{}{
-		"LHOST":   "0.0.0.0",
-		"LPORT":   4444,
-		"PAYLOAD": "generic/shell_reverse_tcp",
-	})
+	moduleOptions := gomsf.NewModuleOptions()
+	moduleOptions.SetStringOption("LHOST", "0.0.0.0")
+	moduleOptions.SetIntOption("LPORT", 4444)
+	moduleOptions.SetStringOption("PAYLOAD", "generic/shell_reverse_tcp")
+
+	executeResult, err := client.ModuleExecute(gomsf.Exploit, "multi/handler", moduleOptions)
 	if err != nil {
 		panic(err)
 	}

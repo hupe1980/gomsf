@@ -376,6 +376,28 @@ func (c *Client) ModuleTargetCompatiblePayloads(moduleName string, targetNumber 
 	return res, nil
 }
 
+type ModuleOptions struct {
+	Options map[string]interface{}
+}
+
+func NewModuleOptions() *ModuleOptions {
+	return &ModuleOptions{
+		Options: make(map[string]interface{}),
+	}
+}
+
+func (e *ModuleOptions) SetStringOption(name, value string) {
+	e.Options[name] = value
+}
+
+func (e *ModuleOptions) SetIntOption(name string, value int) {
+	e.Options[name] = value
+}
+
+func (e *ModuleOptions) SetBoolOption(name string, value bool) {
+	e.Options[name] = value
+}
+
 type ModuleExecuteReq struct {
 	_msgpack   struct{} `msgpack:",asArray"` //nolint:structcheck,unused //msgpack internal
 	Method     string
@@ -390,13 +412,13 @@ type ModuleExecuteRes struct {
 	UUID  string `msgpack:"uuid"`
 }
 
-func (c *Client) ModuleExecute(moduleType ModuleType, moduleName string, moduleOptions map[string]interface{}) (*ModuleExecuteRes, error) {
+func (c *Client) ModuleExecute(moduleType ModuleType, moduleName string, options *ModuleOptions) (*ModuleExecuteRes, error) {
 	req := &ModuleExecuteReq{
 		Method:     "module.execute",
 		Token:      c.token,
 		ModuleType: moduleType,
 		ModuleName: moduleName,
-		Options:    moduleOptions,
+		Options:    options.Options,
 	}
 
 	var res *ModuleExecuteRes

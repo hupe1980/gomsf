@@ -56,13 +56,14 @@ Name: MS08-067 Microsoft Server Service Relative Path Stack Corruption
 Rank: great
 ```
 
-## Execut4 a module
+## Execute a module
 ```golang
-executeResult, err := client.ModuleExecute(gomsf.Exploit, "multi/handler", map[string]interface{}{
-    "LHOST":   "0.0.0.0",
-    "LPORT":   4444,
-    "PAYLOAD": "generic/shell_reverse_tcp",
-})
+moduleOptions := gomsf.NewModuleOptions()
+moduleOptions.SetStringOption("LHOST", "0.0.0.0")
+moduleOptions.SetIntOption("LPORT", 4444)
+moduleOptions.SetStringOption("PAYLOAD", "generic/shell_reverse_tcp")
+
+executeResult, err := client.ModuleExecute(gomsf.Exploit, "multi/handler", moduleOptions)
 if err != nil {
     panic(err)
 }
