@@ -1,7 +1,7 @@
 package rpc
 
 type job struct {
-	client Client
+	rpc *RPC
 }
 
 type JobInfoReq struct {
@@ -22,12 +22,12 @@ type JobInfoRes struct {
 func (j *job) Info(jobID string) (*JobInfoRes, error) {
 	req := &JobInfoReq{
 		Method: "job.info",
-		Token:  j.client.Token(),
+		Token:  j.rpc.Token(),
 		JobID:  jobID,
 	}
 
 	var res *JobInfoRes
-	if err := j.client.Call(req, &res); err != nil {
+	if err := j.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -45,11 +45,11 @@ type JobListRes map[string]string
 func (j *job) List() (*JobListRes, error) {
 	req := &JobListReq{
 		Method: "job.list",
-		Token:  j.client.Token(),
+		Token:  j.rpc.Token(),
 	}
 
 	var res *JobListRes
-	if err := j.client.Call(req, &res); err != nil {
+	if err := j.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -70,12 +70,12 @@ type JobStopRes struct {
 func (j *job) Stop(jobID string) (*JobStopRes, error) {
 	req := &JobStopReq{
 		Method: "job.stop",
-		Token:  j.client.Token(),
+		Token:  j.rpc.Token(),
 		JobID:  jobID,
 	}
 
 	var res *JobStopRes
-	if err := j.client.Call(req, &res); err != nil {
+	if err := j.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 

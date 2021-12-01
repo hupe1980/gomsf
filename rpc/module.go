@@ -1,7 +1,7 @@
 package rpc
 
 type module struct {
-	client Client
+	rpc *RPC
 }
 
 type ModuleType string
@@ -25,11 +25,11 @@ type ModuleArchitecturesRes []string
 func (m *module) Architectures() (*ModuleArchitecturesRes, error) {
 	req := &ModuleArchitecturesReq{
 		Method: "module.architectures",
-		Token:  m.client.Token(),
+		Token:  m.rpc.Token(),
 	}
 
 	var res *ModuleArchitecturesRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -48,11 +48,11 @@ type ModuleExploitsRes struct {
 func (m *module) Exploits() (*ModuleExploitsRes, error) {
 	req := &ModuleExploitsReq{
 		Method: "module.exploits",
-		Token:  m.client.Token(),
+		Token:  m.rpc.Token(),
 	}
 
 	var res *ModuleExploitsRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -72,11 +72,11 @@ type ModuleAuxiliaryRes struct {
 func (m *module) Auxiliary() (*ModuleAuxiliaryRes, error) {
 	req := &ModuleAuxiliaryReq{
 		Method: "module.auxiliary",
-		Token:  m.client.Token(),
+		Token:  m.rpc.Token(),
 	}
 
 	var res *ModuleAuxiliaryRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -100,12 +100,12 @@ type ModuleCompatiblePayloadsRes struct {
 func (m *module) CompatiblePayloads(moduleName string) (*ModuleCompatiblePayloadsRes, error) {
 	req := &ModuleCompatiblePayloadsReq{
 		Method:     "module.compatible_payloads",
-		Token:      m.client.Token(),
+		Token:      m.rpc.Token(),
 		ModuleName: moduleName,
 	}
 
 	var res *ModuleCompatiblePayloadsRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -126,12 +126,12 @@ type ModuleCompatibleSessionsRes struct {
 func (m *module) CompatibleSessions(moduleName string) (*ModuleCompatibleSessionsRes, error) {
 	req := &ModuleCompatibleSessionsReq{
 		Method:     "module.compatible_sessions",
-		Token:      m.client.Token(),
+		Token:      m.rpc.Token(),
 		ModuleName: moduleName,
 	}
 
 	var res *ModuleCompatibleSessionsRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -166,14 +166,14 @@ type ModuleEncodeRes struct {
 func (m *module) Encode(data, encoderModule string, moduleOptions *EncodingOptions) (*ModuleEncodeRes, error) {
 	req := &ModuleEncodeReq{
 		Method:        "module.encode",
-		Token:         m.client.Token(),
+		Token:         m.rpc.Token(),
 		Data:          data,
 		EncoderModule: encoderModule,
 		Options:       moduleOptions,
 	}
 
 	var res *ModuleEncodeRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -192,11 +192,11 @@ type ModulePostRes struct {
 func (m *module) Post() (*ModulePostRes, error) {
 	req := &ModulePostReq{
 		Method: "module.post",
-		Token:  m.client.Token(),
+		Token:  m.rpc.Token(),
 	}
 
 	var res *ModulePostRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -215,11 +215,11 @@ type ModulePayloadsRes struct {
 func (m *module) Payloads() (*ModulePayloadsRes, error) {
 	req := &ModulePayloadsReq{
 		Method: "module.payloads",
-		Token:  m.client.Token(),
+		Token:  m.rpc.Token(),
 	}
 
 	var res *ModulePayloadsRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -238,11 +238,11 @@ type ModuleEncodersRes struct {
 func (m *module) Encoders() (*ModuleEncodersRes, error) {
 	req := &ModuleEncodersReq{
 		Method: "module.encoders",
-		Token:  m.client.Token(),
+		Token:  m.rpc.Token(),
 	}
 
 	var res *ModuleEncodersRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -261,11 +261,11 @@ type ModuleNopsRes struct {
 func (m *module) Nops() (*ModuleNopsRes, error) {
 	req := &ModuleNopsReq{
 		Method: "module.nops",
-		Token:  m.client.Token(),
+		Token:  m.rpc.Token(),
 	}
 
 	var res *ModuleNopsRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -294,13 +294,13 @@ type ModuleInfoRes struct {
 func (m *module) Info(moduleType ModuleType, moduleName string) (*ModuleInfoRes, error) {
 	req := &ModuleInfoReq{
 		Method:     "module.info",
-		Token:      m.client.Token(),
+		Token:      m.rpc.Token(),
 		ModuleType: moduleType,
 		ModuleName: moduleName,
 	}
 
 	var res *ModuleInfoRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -327,13 +327,13 @@ type ModuleOptionsRes map[string]struct {
 func (m *module) Options(moduleType ModuleType, moduleName string) (*ModuleOptionsRes, error) {
 	req := &ModuleOptionsReq{
 		Method:     "module.options",
-		Token:      m.client.Token(),
+		Token:      m.rpc.Token(),
 		ModuleType: moduleType,
 		ModuleName: moduleName,
 	}
 
 	var res *ModuleOptionsRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -354,13 +354,13 @@ type ModuleTargetCompatiblePayloadsRes struct {
 func (m *module) TargetCompatiblePayloads(moduleName string, targetNumber uint32) (*ModuleTargetCompatiblePayloadsRes, error) {
 	req := &ModuleTargetCompatiblePayloadsReq{
 		Method:     "module.target_compatible_payloads",
-		Token:      m.client.Token(),
+		Token:      m.rpc.Token(),
 		ModuleName: moduleName,
 		ArchNumber: targetNumber,
 	}
 
 	var res *ModuleTargetCompatiblePayloadsRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -405,14 +405,14 @@ type ModuleExecuteRes struct {
 func (m *module) Execute(moduleType ModuleType, moduleName string, options *ModuleOptions) (*ModuleExecuteRes, error) {
 	req := &ModuleExecuteReq{
 		Method:     "module.execute",
-		Token:      m.client.Token(),
+		Token:      m.rpc.Token(),
 		ModuleType: moduleType,
 		ModuleName: moduleName,
 		Options:    options.Options,
 	}
 
 	var res *ModuleExecuteRes
-	if err := m.client.Call(req, &res); err != nil {
+	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 

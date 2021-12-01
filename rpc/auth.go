@@ -1,7 +1,7 @@
 package rpc
 
 type auth struct {
-	client Client
+	rpc *RPC
 }
 
 type AuthLoginReq struct {
@@ -24,7 +24,7 @@ func (a *auth) Login(user, pass string) (*AuthLoginRes, error) {
 	}
 
 	var res *AuthLoginRes
-	if err := a.client.Call(req, &res); err != nil {
+	if err := a.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -44,11 +44,11 @@ type AuthLogoutRes struct {
 func (a *auth) Logout() (*AuthLogoutRes, error) {
 	req := &AuthLogoutReq{
 		Method: "auth.logout",
-		Token:  a.client.Token(),
+		Token:  a.rpc.Token(),
 	}
 
 	var res *AuthLogoutRes
-	if err := a.client.Call(req, &res); err != nil {
+	if err := a.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 

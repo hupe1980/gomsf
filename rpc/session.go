@@ -1,7 +1,7 @@
 package rpc
 
 type session struct {
-	client Client
+	rpc *RPC
 }
 
 type SessionCompatibleModulesReq struct {
@@ -17,12 +17,12 @@ type SessionCompatibleModulesRes struct {
 func (s *session) CompatibleModules(session int) (SessionCompatibleModulesRes, error) {
 	req := &SessionCompatibleModulesReq{
 		Method:    "session.compatible_modules",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 	}
 
 	var res SessionCompatibleModulesRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionCompatibleModulesRes{}, err
 	}
 
@@ -128,11 +128,11 @@ type SessionListRes map[uint32]struct {
 func (s *session) List() (SessionListRes, error) {
 	req := &SessionListReq{
 		Method: "session.list",
-		Token:  s.client.Token(),
+		Token:  s.rpc.Token(),
 	}
 
 	var res SessionListRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -153,13 +153,13 @@ type SessionShellWriteRes struct {
 func (s *session) ShellWrite(session int, command string) error {
 	req := &SessionShellWriteReq{
 		Method:    "session.shell_write",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 		Command:   command,
 	}
 
 	var res SessionShellWriteRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return err
 	}
 
@@ -181,13 +181,13 @@ type SessionShellReadRes struct {
 func (s *session) ShellRead(session int, readPointer uint32) (string, error) {
 	req := &SessionShellReadReq{
 		Method:      "session.shell_read",
-		Token:       s.client.Token(),
+		Token:       s.rpc.Token(),
 		SessionID:   session,
 		ReadPointer: readPointer,
 	}
 
 	var res SessionShellReadRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return "", err
 	}
 
@@ -197,13 +197,13 @@ func (s *session) ShellRead(session int, readPointer uint32) (string, error) {
 func (s *session) MeterpreterWrite(session int, command string) (SessionMeterpreterWriteRes, error) {
 	req := &SessionMeterpreterWriteReq{
 		Method:    "session.meterpreter_write",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 		Command:   command,
 	}
 
 	var res SessionMeterpreterWriteRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionMeterpreterWriteRes{}, err
 	}
 
@@ -213,12 +213,12 @@ func (s *session) MeterpreterWrite(session int, command string) (SessionMeterpre
 func (s *session) MeterpreterRead(session int) (SessionMeterpreterReadRes, error) {
 	req := &SessionMeterpreterReadReq{
 		Method:    "session.meterpreter_read",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 	}
 
 	var res SessionMeterpreterReadRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionMeterpreterReadRes{}, err
 	}
 
@@ -228,13 +228,13 @@ func (s *session) MeterpreterRead(session int) (SessionMeterpreterReadRes, error
 func (s *session) MeterpreterRunSingle(session int, command string) (SessionMeterpreterRunSingleRes, error) {
 	req := &SessionMeterpreterRunSingleReq{
 		Method:    "session.meterpreter_run_single",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 		Command:   command,
 	}
 
 	var res SessionMeterpreterRunSingleRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionMeterpreterRunSingleRes{}, err
 	}
 
@@ -244,12 +244,12 @@ func (s *session) MeterpreterRunSingle(session int, command string) (SessionMete
 func (s *session) MeterpreterSessionDetach(session int) (SessionMeterpreterDetachRes, error) {
 	req := &SessionMeterpreterDetachReq{
 		Method:    "session.meterpreter_session_detach",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 	}
 
 	var res SessionMeterpreterDetachRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionMeterpreterDetachRes{}, err
 	}
 
@@ -259,12 +259,12 @@ func (s *session) MeterpreterSessionDetach(session int) (SessionMeterpreterDetac
 func (s *session) MeterpreterSessionKill(session int) (SessionMeterpreterKillRes, error) {
 	req := &SessionMeterpreterKillReq{
 		Method:    "session.meterpreter_session_kill",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 	}
 
 	var res SessionMeterpreterKillRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionMeterpreterKillRes{}, err
 	}
 
@@ -285,13 +285,13 @@ type SessionMeterpreterTabsRes struct {
 func (s *session) MeterpreterTabs(sessionID int, inputLine string) (SessionMeterpreterTabsRes, error) {
 	req := &SessionMeterpreterTabsReq{
 		Method:    "session.meterpreter_tabs",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: sessionID,
 		InputLine: inputLine,
 	}
 
 	var res SessionMeterpreterTabsRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionMeterpreterTabsRes{}, err
 	}
 
@@ -301,14 +301,14 @@ func (s *session) MeterpreterTabs(sessionID int, inputLine string) (SessionMeter
 func (s *session) ShellUpgrade(session int, lhostAddress string, lportNumber uint32) (SessionShellUpgradeRes, error) {
 	req := &SessionShellUpgradeReq{
 		Method:     "session.shell_upgrade",
-		Token:      s.client.Token(),
+		Token:      s.rpc.Token(),
 		SessionID:  session,
 		IPAddress:  lhostAddress,
 		PortNumber: lportNumber,
 	}
 
 	var res SessionShellUpgradeRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionShellUpgradeRes{}, err
 	}
 
@@ -318,12 +318,12 @@ func (s *session) ShellUpgrade(session int, lhostAddress string, lportNumber uin
 func (s *session) RingClear(session int) (SessionRingClearRes, error) {
 	req := &SessionRingClearReq{
 		Method:    "session.ring_clear",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 	}
 
 	var res SessionRingClearRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionRingClearRes{}, err
 	}
 
@@ -343,12 +343,12 @@ type SessionRingLastRes struct {
 func (s *session) RingLast(session int) (SessionRingLastRes, error) {
 	req := &SessionRingLastReq{
 		Method:    "session.ring_last",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 	}
 
 	var res SessionRingLastRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionRingLastRes{}, err
 	}
 
@@ -358,13 +358,13 @@ func (s *session) RingLast(session int) (SessionRingLastRes, error) {
 func (s *session) RingPut(session int, command string) (SessionRingPutRes, error) {
 	req := &SessionRingPutReq{
 		Method:    "session.ring_put",
-		Token:     s.client.Token(),
+		Token:     s.rpc.Token(),
 		SessionID: session,
 		Command:   command,
 	}
 
 	var res SessionRingPutRes
-	if err := s.client.Call(req, &res); err != nil {
+	if err := s.rpc.Call(req, &res); err != nil {
 		return SessionRingPutRes{}, err
 	}
 

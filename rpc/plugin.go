@@ -1,7 +1,7 @@
 package rpc
 
 type plugin struct {
-	client Client
+	rpc *RPC
 }
 
 type PluginLoadReq struct {
@@ -19,13 +19,13 @@ type PluginLoadRes struct {
 func (p *plugin) Load(pluginName string, pluginOptions map[string]string) (*PluginLoadRes, error) {
 	req := &PluginLoadReq{
 		Method:     "plugin.load",
-		Token:      p.client.Token(),
+		Token:      p.rpc.Token(),
 		PluginName: pluginName,
 		Options:    pluginOptions,
 	}
 
 	var res *PluginLoadRes
-	if err := p.client.Call(req, &res); err != nil {
+	if err := p.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -45,11 +45,11 @@ type PluginLoadedRes struct {
 func (p *plugin) Loaded() (*PluginLoadedRes, error) {
 	req := &PluginLoadedReq{
 		Method: "plugin.loaded",
-		Token:  p.client.Token(),
+		Token:  p.rpc.Token(),
 	}
 
 	var res *PluginLoadedRes
-	if err := p.client.Call(req, &res); err != nil {
+	if err := p.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -70,12 +70,12 @@ type PluginUnLoadRes struct {
 func (p *plugin) UnLoad(pluginName string) (*PluginUnLoadRes, error) {
 	req := &PluginUnLoadReq{
 		Method:     "plugin.unload",
-		Token:      p.client.Token(),
+		Token:      p.rpc.Token(),
 		PluginName: pluginName,
 	}
 
 	var res *PluginUnLoadRes
-	if err := p.client.Call(req, &res); err != nil {
+	if err := p.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 

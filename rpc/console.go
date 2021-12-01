@@ -1,7 +1,7 @@
 package rpc
 
 type console struct {
-	client Client
+	rpc *RPC
 }
 
 type ConsoleCreateReq struct {
@@ -19,11 +19,11 @@ type ConsoleCreateRes struct {
 func (c *console) Create() (*ConsoleCreateRes, error) {
 	req := &ConsoleCreateReq{
 		Method: "console.create",
-		Token:  c.client.Token(),
+		Token:  c.rpc.Token(),
 	}
 
 	var res *ConsoleCreateRes
-	if err := c.client.Call(req, &res); err != nil {
+	if err := c.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -44,12 +44,12 @@ type ConsoleDestroyRes struct {
 func (c *console) Destroy(consoleID string) (*ConsoleDestroyRes, error) {
 	req := &ConsoleDestroyReq{
 		Method:    "console.destroy",
-		Token:     c.client.Token(),
+		Token:     c.rpc.Token(),
 		ConsoleID: consoleID,
 	}
 
 	var res *ConsoleDestroyRes
-	if err := c.client.Call(req, &res); err != nil {
+	if err := c.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -71,11 +71,11 @@ type ConsoleListRes map[string][]struct {
 func (c *console) List() (*ConsoleListRes, error) {
 	req := &ConsoleListReq{
 		Method: "console.list",
-		Token:  c.client.Token(),
+		Token:  c.rpc.Token(),
 	}
 
 	var res *ConsoleListRes
-	if err := c.client.Call(req, &res); err != nil {
+	if err := c.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -98,12 +98,12 @@ type ConsoleReadRes struct {
 func (c *console) Read(consoleID string) (*ConsoleReadRes, error) {
 	req := &ConsoleReadReq{
 		Method:    "console.read",
-		Token:     c.client.Token(),
+		Token:     c.rpc.Token(),
 		ConsoleID: consoleID,
 	}
 
 	var res *ConsoleReadRes
-	if err := c.client.Call(req, &res); err != nil {
+	if err := c.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -124,12 +124,12 @@ type ConsoleSessionDetachRes struct {
 func (c *console) SessionDetach(consoleID string) (*ConsoleSessionDetachRes, error) {
 	req := &ConsoleSessionDetachReq{
 		Method:    "console.session_detach",
-		Token:     c.client.Token(),
+		Token:     c.rpc.Token(),
 		ConsoleID: consoleID,
 	}
 
 	var res *ConsoleSessionDetachRes
-	if err := c.client.Call(req, &res); err != nil {
+	if err := c.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -150,12 +150,12 @@ type ConsoleSessionKillRes struct {
 func (c *console) SessionKill(consoleID string) (*ConsoleSessionKillRes, error) {
 	req := &ConsoleSessionKillReq{
 		Method:    "console.session_kill",
-		Token:     c.client.Token(),
+		Token:     c.rpc.Token(),
 		ConsoleID: consoleID,
 	}
 
 	var res *ConsoleSessionKillRes
-	if err := c.client.Call(req, &res); err != nil {
+	if err := c.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -177,13 +177,13 @@ type ConsoleTabsRes struct {
 func (c *console) Tabs(consoleID, line string) (*ConsoleTabsRes, error) {
 	req := &ConsoleTabsReq{
 		Method:    "console.tabs",
-		Token:     c.client.Token(),
+		Token:     c.rpc.Token(),
 		ConsoleID: consoleID,
 		InputLine: line,
 	}
 
 	var res *ConsoleTabsRes
-	if err := c.client.Call(req, &res); err != nil {
+	if err := c.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 
@@ -205,13 +205,13 @@ type ConsoleWriteRes struct {
 func (c *console) Write(consoleID, command string) (*ConsoleWriteRes, error) {
 	req := &ConsoleWriteReq{
 		Method:    "console.write",
-		Token:     c.client.Token(),
+		Token:     c.rpc.Token(),
 		ConsoleID: consoleID,
 		Command:   command,
 	}
 
 	var res *ConsoleWriteRes
-	if err := c.client.Call(req, &res); err != nil {
+	if err := c.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
 

@@ -1,7 +1,7 @@
 package rpc
 
 type health struct {
-	client Client
+	rpc *RPC
 }
 
 type HealthCheckReq struct {
@@ -14,7 +14,7 @@ func (h *health) Check() error {
 		Method: "health.check",
 	}
 
-	if err := h.client.Call(req, nil); err != nil {
+	if err := h.rpc.Call(req, nil); err != nil {
 		return err
 	}
 
