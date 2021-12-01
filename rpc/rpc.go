@@ -31,12 +31,6 @@ type RPC struct {
 	Session *session
 }
 
-type RPCOptions struct {
-	Token      string
-	SSL        bool
-	APIVersion string
-}
-
 func NewRPC(http *http.Client, url string) *RPC {
 	rpc := &RPC{
 		http: http,
