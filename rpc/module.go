@@ -3,17 +3,6 @@ package rpc
 type module struct {
 	rpc *RPC
 }
-
-type ModuleType string
-
-const (
-	Exploit   ModuleType = "exploit"
-	Auxiliary ModuleType = "auxiliary"
-	Post      ModuleType = "post"
-	Payload   ModuleType = "payload"
-	Evasion   ModuleType = "evasion"
-)
-
 type ModuleArchitecturesReq struct {
 	Method string
 	Token  string
@@ -29,29 +18,6 @@ func (m *module) Architectures() (*ModuleArchitecturesRes, error) {
 	}
 
 	var res *ModuleArchitecturesRes
-	if err := m.rpc.Call(req, &res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
-
-type ModuleExploitsReq struct {
-	Method string
-	Token  string
-}
-
-type ModuleExploitsRes struct {
-	Modules []string `msgpack:"modules"`
-}
-
-func (m *module) Exploits() (*ModuleExploitsRes, error) {
-	req := &ModuleExploitsReq{
-		Method: "module.exploits",
-		Token:  m.rpc.Token(),
-	}
-
-	var res *ModuleExploitsRes
 	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
@@ -83,9 +49,53 @@ func (m *module) Auxiliary() (*ModuleAuxiliaryRes, error) {
 	return res, nil
 }
 
-// CHECK
+type ModuleCheckReq struct {
+	Method     string
+	Token      string
+	ModuleType string
+	ModuleName string
+	Options    map[string]string
+}
 
-// CompatibleEvasionPayloads
+func (m *module) Check(moduleType, moduleName string, options map[string]string) error {
+	req := &ModuleCheckReq{
+		Method:     "module.execute",
+		Token:      m.rpc.Token(),
+		ModuleType: moduleType,
+		ModuleName: moduleName,
+		Options:    options,
+	}
+
+	if err := m.rpc.Call(req, nil); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+type ModuleExploitsReq struct {
+	Method string
+	Token  string
+}
+
+type ModuleExploitsRes struct {
+	Modules []string `msgpack:"modules"`
+}
+
+func (m *module) Exploits() (*ModuleExploitsRes, error) {
+	req := &ModuleExploitsReq{
+		Method: "module.exploits",
+		Token:  m.rpc.Token(),
+	}
+
+	var res *ModuleExploitsRes
+	if err := m.rpc.Call(req, &res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 type ModuleCompatiblePayloadsReq struct {
 	Method     string
 	Token      string
@@ -138,24 +148,12 @@ func (m *module) CompatibleSessions(moduleName string) (*ModuleCompatibleSession
 	return res, nil
 }
 
-type EncodingOptions struct {
-	Format       string `msgpack:"format,omitempty"`        // Encoding format
-	Badchars     string `msgpack:"badchars,omitempty"`      // Bad characters
-	Platform     string `msgpack:"platform,omitempty"`      // Platform
-	Arch         string `msgpack:"arch,omitempty"`          // Architecture
-	ECount       int    `msgpack:"ecount,omitempty"`        // Number of times to encode
-	Inject       bool   `msgpack:"inject,omitempty"`        // Enable injection
-	Template     string `msgpack:"template,omitempty"`      // The template file (an executable)
-	TemplatePath string `msgpack:"template_path,omitempty"` // Template path
-	Addshellcode string `msgpack:"addshellcode,omitempty"`  // Custom shellcode
-}
-
 type ModuleEncodeReq struct {
 	Method        string
 	Token         string
 	Data          string
 	EncoderModule string
-	Options       *EncodingOptions
+	Options       map[string]string
 }
 
 type ModuleEncodeRes struct {
@@ -163,13 +161,13 @@ type ModuleEncodeRes struct {
 }
 
 // Encode encodes data with an encoder
-func (m *module) Encode(data, encoderModule string, moduleOptions *EncodingOptions) (*ModuleEncodeRes, error) {
+func (m *module) Encode(data, encoderModule string, options map[string]string) (*ModuleEncodeRes, error) {
 	req := &ModuleEncodeReq{
 		Method:        "module.encode",
 		Token:         m.rpc.Token(),
 		Data:          data,
 		EncoderModule: encoderModule,
-		Options:       moduleOptions,
+		Options:       options,
 	}
 
 	var res *ModuleEncodeRes
@@ -226,6 +224,28 @@ func (m *module) Payloads() (*ModulePayloadsRes, error) {
 	return res, nil
 }
 
+type ModulePlatformsReq struct {
+	Method string
+	Token  string
+}
+
+type ModulePlatformsRes []string
+
+// Platforms returns a list of platform names
+func (m *module) Platforms() (*ModulePlatformsRes, error) {
+	req := &ModulePlatformsReq{
+		Method: "module.platforms",
+		Token:  m.rpc.Token(),
+	}
+
+	var res *ModulePlatformsRes
+	if err := m.rpc.Call(req, &res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 type ModuleEncodersReq struct {
 	Method string
 	Token  string
@@ -242,6 +262,50 @@ func (m *module) Encoders() (*ModuleEncodersRes, error) {
 	}
 
 	var res *ModuleEncodersRes
+	if err := m.rpc.Call(req, &res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+type ModuleEncryptionFormatsReq struct {
+	Method string
+	Token  string
+}
+
+type ModuleEncryptionFormatsRes []string
+
+func (m *module) EncryptionFormats() (*ModuleEncryptionFormatsRes, error) {
+	req := &ModuleEncryptionFormatsReq{
+		Method: "module.encryption_formats",
+		Token:  m.rpc.Token(),
+	}
+
+	var res *ModuleEncryptionFormatsRes
+	if err := m.rpc.Call(req, &res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+type ModuleEvasionReq struct {
+	Method string
+	Token  string
+}
+
+type ModuleEvasionRes struct {
+	Modules []string `msgpack:"modules"`
+}
+
+func (m *module) Evasion() (*ModuleEvasionRes, error) {
+	req := &ModuleEvasionReq{
+		Method: "module.evasion",
+		Token:  m.rpc.Token(),
+	}
+
+	var res *ModuleEvasionRes
 	if err := m.rpc.Call(req, &res); err != nil {
 		return nil, err
 	}
@@ -275,7 +339,7 @@ func (m *module) Nops() (*ModuleNopsRes, error) {
 type ModuleInfoReq struct {
 	Method     string
 	Token      string
-	ModuleType ModuleType
+	ModuleType string
 	ModuleName string
 }
 
@@ -291,7 +355,7 @@ type ModuleInfoRes struct {
 }
 
 // Info returns the metadata for a module
-func (m *module) Info(moduleType ModuleType, moduleName string) (*ModuleInfoRes, error) {
+func (m *module) Info(moduleType, moduleName string) (*ModuleInfoRes, error) {
 	req := &ModuleInfoReq{
 		Method:     "module.info",
 		Token:      m.rpc.Token(),
@@ -310,7 +374,7 @@ func (m *module) Info(moduleType ModuleType, moduleName string) (*ModuleInfoRes,
 type ModuleOptionsReq struct {
 	Method     string
 	Token      string
-	ModuleType ModuleType
+	ModuleType string
 	ModuleName string
 }
 
@@ -324,7 +388,7 @@ type ModuleOptionsRes map[string]struct {
 	Enums    []string    `msgpack:"enums,omitempty"`
 }
 
-func (m *module) Options(moduleType ModuleType, moduleName string) (*ModuleOptionsRes, error) {
+func (m *module) Options(moduleType, moduleName string) (*ModuleOptionsRes, error) {
 	req := &ModuleOptionsReq{
 		Method:     "module.options",
 		Token:      m.rpc.Token(),
@@ -367,34 +431,12 @@ func (m *module) TargetCompatiblePayloads(moduleName string, targetNumber uint32
 	return res, nil
 }
 
-type ModuleOptions struct {
-	Options map[string]interface{}
-}
-
-func NewModuleOptions() *ModuleOptions {
-	return &ModuleOptions{
-		Options: make(map[string]interface{}),
-	}
-}
-
-func (e *ModuleOptions) SetStringOption(name, value string) {
-	e.Options[name] = value
-}
-
-func (e *ModuleOptions) SetIntOption(name string, value int) {
-	e.Options[name] = value
-}
-
-func (e *ModuleOptions) SetBoolOption(name string, value bool) {
-	e.Options[name] = value
-}
-
 type ModuleExecuteReq struct {
 	Method     string
 	Token      string
-	ModuleType ModuleType
+	ModuleType string
 	ModuleName string
-	Options    map[string]interface{}
+	Options    map[string]string
 }
 
 type ModuleExecuteRes struct {
@@ -402,13 +444,13 @@ type ModuleExecuteRes struct {
 	UUID  string `msgpack:"uuid"`
 }
 
-func (m *module) Execute(moduleType ModuleType, moduleName string, options *ModuleOptions) (*ModuleExecuteRes, error) {
+func (m *module) Execute(moduleType, moduleName string, options map[string]string) (*ModuleExecuteRes, error) {
 	req := &ModuleExecuteReq{
 		Method:     "module.execute",
 		Token:      m.rpc.Token(),
 		ModuleType: moduleType,
 		ModuleName: moduleName,
-		Options:    options.Options,
+		Options:    options,
 	}
 
 	var res *ModuleExecuteRes

@@ -28,34 +28,35 @@ func main() {
 
 	fmt.Printf("Version: %s\nRuby: %s\nAPI: %s\n\n", version.Version, version.Ruby, version.API)
 
-	// encodeResult, err := client.Module.Encode("AAAA", "x86/shikata_ga_nai", &rpc.EncodingOptions{
-	// 	Format: "c",
-	// })
+	encoded, err := client.Module.Encode("AAAA", "x86/shikata_ga_nai", &gomsf.EncodeOptions{
+		Format: "c",
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("'AAAA' encoded with shikata_ga_nai:")
+	fmt.Printf("%s\n", encoded)
+
+	exploit, err := client.Module.UseExploit("multi/handler")
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(exploit.Options())
+
+	// payloads, err := exploit.Payloads()
 	// if err != nil {
 	// 	panic(err)
 	// }
 
-	// fmt.Println("'AAAA' encoded with shikata_ga_nai:")
-	// fmt.Printf("%s\n", encodeResult.Encoded)
+	// fmt.Println(payloads)
 
-	// infoResult, err := client.Module.Info(rpc.Exploit, "windows/smb/ms08_067_netapi")
-	// if err != nil {
-	// 	panic(err)
-	// }
+	info, err := client.Module.Info(gomsf.ExploitType, "windows/smb/ms08_067_netapi")
+	if err != nil {
+		panic(err)
+	}
 
-	// fmt.Printf("Name: %s\n", infoResult.Name)
-	// fmt.Printf("Rank: %s\n", infoResult.Rank)
-
-	// moduleOptions := rpc.NewModuleOptions()
-	// moduleOptions.SetStringOption("LHOST", "0.0.0.0")
-	// moduleOptions.SetIntOption("LPORT", 4444)
-	// moduleOptions.SetStringOption("PAYLOAD", "generic/shell_reverse_tcp")
-
-	// executeResult, err := client.Module.Execute(rpc.Exploit, "multi/handler", moduleOptions)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Printf("JobID: %d\n", executeResult.JobID)
-	// fmt.Printf("UUID: %s\n", executeResult.UUID)
+	fmt.Printf("Name: %s\n", info.Name)
+	fmt.Printf("Rank: %s\n", info.Rank)
 }

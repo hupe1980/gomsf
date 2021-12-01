@@ -127,7 +127,7 @@ type CoreSaveReq struct {
 }
 
 type CoreSaveRes struct {
-	Result string `msgpack:"result"`
+	Result Result `msgpack:"result"`
 }
 
 // Save saves current framework settings
@@ -153,7 +153,7 @@ type CoreSetgReq struct {
 }
 
 type CoreSetgRes struct {
-	Result string `msgpack:"result"`
+	Result Result `msgpack:"result"`
 }
 
 // Setg sets a global datastore option
@@ -179,7 +179,7 @@ type CoreStopReq struct {
 }
 
 type CoreStopRes struct {
-	Result string `msgpack:"result"`
+	Result Result `msgpack:"result"`
 }
 
 // Stop stops the RPC service
@@ -204,7 +204,7 @@ type CoreThreadKillReq struct {
 }
 
 type CoreThreadKillRes struct {
-	Result string `msgpack:"result"`
+	Result Result `msgpack:"result"`
 }
 
 // ThreadKill kills a framework thread
@@ -257,7 +257,7 @@ type CoreUnsetgReq struct {
 }
 
 type CoreUnsetgRes struct {
-	Result string `msgpack:"result"`
+	Result Result `msgpack:"result"`
 }
 
 // Unsetg unsets a global datastore option

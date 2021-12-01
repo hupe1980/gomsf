@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/fatih/structs v1.1.0
 	github.com/stretchr/testify v1.7.0
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 )

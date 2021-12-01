@@ -21,6 +21,7 @@ type MSF struct {
 	Health     *HealthManager
 	Plugins    *PluginManager
 	Jobs       *JobManager
+	Module     *ModuleManager
 }
 
 type MSFOptions struct {
@@ -65,6 +66,7 @@ func New(address string, optFns ...func(o *MSFOptions)) (*MSF, error) {
 		Health:     &HealthManager{rpc: rpc},
 		Plugins:    &PluginManager{rpc: rpc},
 		Jobs:       &JobManager{rpc: rpc},
+		Module:     &ModuleManager{rpc: rpc},
 	}
 
 	return msf, nil
