@@ -64,9 +64,9 @@ func New(address string, optFns ...func(o *MSFOptions)) (*MSF, error) {
 		Consoles:   &ConsoleManager{rpc: rpc},
 		Core:       &CoreManager{rpc: rpc},
 		Health:     &HealthManager{rpc: rpc},
-		Plugins:    &PluginManager{rpc: rpc},
 		Jobs:       &JobManager{rpc: rpc},
 		Module:     &ModuleManager{rpc: rpc},
+		Plugins:    &PluginManager{rpc: rpc},
 	}
 
 	return msf, nil

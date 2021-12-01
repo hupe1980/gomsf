@@ -46,9 +46,21 @@ func newModule(rpc *rpc.RPC, moduleType ModuleType, moduleName string) (*module,
 }
 
 func (m *module) Options() []string {
-	keys := make([]string, len(*m.options))
+	keys := make([]string, 0, len(*m.options))
 	for k := range *m.options {
 		keys = append(keys, k)
+	}
+
+	return keys
+}
+
+func (m *module) Required() []string {
+	var keys []string
+
+	for k, v := range *m.options {
+		if v.Required {
+			keys = append(keys, k)
+		}
 	}
 
 	return keys
@@ -85,6 +97,15 @@ type ModuleManager struct {
 
 func (mm *ModuleManager) Architectures() (*rpc.ModuleArchitecturesRes, error) {
 	return mm.rpc.Module.Architectures()
+}
+
+func (mm *ModuleManager) CompatibleSessions(moduleName string) ([]string, error) {
+	r, err := mm.rpc.Module.CompatibleSessions(moduleName)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Sessions, nil
 }
 
 func (mm *ModuleManager) Info(moduleType ModuleType, moduleName string) (*rpc.ModuleInfoRes, error) {

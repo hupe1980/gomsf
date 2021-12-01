@@ -45,6 +45,8 @@ func main() {
 
 	fmt.Println(exploit.Options())
 
+	fmt.Println(exploit.Required())
+
 	// payloads, err := exploit.Payloads()
 	// if err != nil {
 	// 	panic(err)
