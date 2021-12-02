@@ -56,6 +56,10 @@ func main() {
 				panic(err)
 			}
 
+			if err = client.Logout(); err != nil {
+				panic(err)
+			}
+
 			os.Exit(0)
 		}
 

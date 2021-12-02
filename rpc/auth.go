@@ -54,3 +54,27 @@ func (a *auth) Logout() (*AuthLogoutRes, error) {
 
 	return res, nil
 }
+
+type AuthTokenListReq struct {
+	Method string
+	Token  string
+}
+
+type AuthTokenListRes struct {
+	Tokens []string `msgpack:"tokens"`
+}
+
+// TokenList returns a list of authentication tokens, including the ones that are temporary, permanent, or stored in the backend
+func (m *module) TokenList(moduleName string, target int) (*AuthTokenListRes, error) {
+	req := &AuthTokenListReq{
+		Method: "auth.token_list",
+		Token:  m.rpc.Token(),
+	}
+
+	var res *AuthTokenListRes
+	if err := m.rpc.Call(req, &res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}

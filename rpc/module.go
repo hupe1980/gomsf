@@ -401,6 +401,32 @@ func (m *module) Info(moduleType, moduleName string) (*ModuleInfoRes, error) {
 	return res, nil
 }
 
+type ModuleInfoHTMLReq struct {
+	Method     string
+	Token      string
+	ModuleType string
+	ModuleName string
+}
+
+type ModuleInfoHTMLRes string
+
+// InfoHTML returns detailed information about a module in HTML
+func (m *module) InfoHTML(moduleType, moduleName string) (*ModuleInfoHTMLRes, error) {
+	req := &ModuleInfoHTMLReq{
+		Method:     "module.info_html",
+		Token:      m.rpc.Token(),
+		ModuleType: moduleType,
+		ModuleName: moduleName,
+	}
+
+	var res *ModuleInfoHTMLRes
+	if err := m.rpc.Call(req, &res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 type ModuleOptionsReq struct {
 	Method     string
 	Token      string

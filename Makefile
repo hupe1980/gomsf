@@ -21,12 +21,12 @@ setup:
 .PHONY: run-rpc
 ## run: Run rpc example 
 run-rpc: 
-	@go run $$(ls -1 _example/rpc/*.go | grep -v _test.go)
+	@go run $$(ls -1 _examples/rpc/*.go | grep -v _test.go)
 
 .PHONY: run-console
 ## run: Run console example 
 run-console: 
-	@go run $$(ls -1 _example/console/*.go | grep -v _test.go)
+	@go run $$(ls -1 _examples/console/*.go | grep -v _test.go)
 
 .PHONY: test
 ## test: Runs go test with default values

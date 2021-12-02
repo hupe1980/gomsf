@@ -152,6 +152,15 @@ func (mm *ModuleManager) Info(moduleType ModuleType, moduleName string) (*rpc.Mo
 	return mm.rpc.Module.Info(string(moduleType), moduleName)
 }
 
+func (mm *ModuleManager) InfoHTML(moduleType ModuleType, moduleName string) (string, error) {
+	r, err := mm.rpc.Module.InfoHTML(string(moduleType), moduleName)
+	if err != nil {
+		return "", err
+	}
+
+	return string(*r), nil
+}
+
 func (mm *ModuleManager) Execute(moduleType ModuleType, moduleName string, options map[string]interface{}) (*rpc.ModuleExecuteRes, error) {
 	optMap := make(map[string]string)
 	for k, v := range options {
