@@ -17,12 +17,37 @@ const (
 	EvasionType   ModuleType = "evasion"
 )
 
+type moduleMeta struct {
+	info    *rpc.ModuleInfoRes
+	options *rpc.ModuleOptionsRes
+}
+
+func (mm *moduleMeta) Options() []string {
+	keys := make([]string, 0, len(*mm.options))
+	for k := range *mm.options {
+		keys = append(keys, k)
+	}
+
+	return keys
+}
+
+func (mm *moduleMeta) Required() []string {
+	var keys []string
+
+	for k, v := range *mm.options {
+		if v.Required {
+			keys = append(keys, k)
+		}
+	}
+
+	return keys
+}
+
 type module struct {
-	rpc        *rpc.RPC
+	*moduleMeta
 	moduleType ModuleType
 	moduleName string
-	info       *rpc.ModuleInfoRes
-	options    *rpc.ModuleOptionsRes
+	rpc        *rpc.RPC
 }
 
 func newModule(rpc *rpc.RPC, moduleType ModuleType, moduleName string) (*module, error) {
@@ -40,30 +65,27 @@ func newModule(rpc *rpc.RPC, moduleType ModuleType, moduleName string) (*module,
 		rpc:        rpc,
 		moduleType: moduleType,
 		moduleName: moduleName,
-		info:       info,
-		options:    options,
+		moduleMeta: &moduleMeta{
+			info:    info,
+			options: options,
+		},
 	}, nil
 }
 
-func (m *module) Options() []string {
-	keys := make([]string, 0, len(*m.options))
-	for k := range *m.options {
-		keys = append(keys, k)
+func (m *module) Set(name string, value interface{}) error {
+	if !contains(m.Options(), name) {
+		return fmt.Errorf("invalid option %s", name)
 	}
 
-	return keys
+	return nil
 }
 
-func (m *module) Required() []string {
-	var keys []string
-
-	for k, v := range *m.options {
-		if v.Required {
-			keys = append(keys, k)
-		}
+func (m *module) Get(name string) (interface{}, error) {
+	if !contains(m.Options(), name) {
+		return nil, fmt.Errorf("invalid option %s", name)
 	}
 
-	return keys
+	return nil, nil
 }
 
 type Exploit struct {
@@ -71,7 +93,20 @@ type Exploit struct {
 }
 
 func (e *Exploit) Payloads() ([]string, error) {
-	r, err := e.rpc.Module.CompatiblePayloads(e.moduleName)
+	r, err := e.rpc.Module.CompatiblePayloads(e.moduleName, 0)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Payloads, nil
+}
+
+type Evasion struct {
+	*module
+}
+
+func (e *Evasion) Payloads() ([]string, error) {
+	r, err := e.rpc.Module.CompatibleEvasionPayloads(e.moduleName, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -95,8 +130,13 @@ type ModuleManager struct {
 	rpc *rpc.RPC
 }
 
-func (mm *ModuleManager) Architectures() (*rpc.ModuleArchitecturesRes, error) {
-	return mm.rpc.Module.Architectures()
+func (mm *ModuleManager) Architectures() ([]string, error) {
+	r, err := mm.rpc.Module.Architectures()
+	if r != nil {
+		return nil, err
+	}
+
+	return ([]string)(*r), nil
 }
 
 func (mm *ModuleManager) CompatibleSessions(moduleName string) ([]string, error) {
@@ -112,8 +152,13 @@ func (mm *ModuleManager) Info(moduleType ModuleType, moduleName string) (*rpc.Mo
 	return mm.rpc.Module.Info(string(moduleType), moduleName)
 }
 
-func (mm *ModuleManager) Execute(moduleType ModuleType, moduleName string, options map[string]string) (*rpc.ModuleExecuteRes, error) {
-	return mm.rpc.Module.Execute(string(moduleType), moduleName, options)
+func (mm *ModuleManager) Execute(moduleType ModuleType, moduleName string, options map[string]interface{}) (*rpc.ModuleExecuteRes, error) {
+	optMap := make(map[string]string)
+	for k, v := range options {
+		optMap[k] = fmt.Sprintf("%v", v)
+	}
+
+	return mm.rpc.Module.Execute(string(moduleType), moduleName, optMap)
 }
 
 type EncodeOptions struct {

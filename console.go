@@ -12,19 +12,15 @@ type Console struct {
 	rpc *rpc.RPC
 }
 
-// NewConsole initializes a msf console
-func NewConsole(rpc *rpc.RPC, consoleID string) (*Console, error) {
-	if consoleID == "" {
-		r, err := rpc.Console.Create()
-		if err != nil {
-			return nil, err
-		}
-
-		consoleID = r.ID
+// newConsole initializes a msf console
+func newConsole(rpc *rpc.RPC) (*Console, error) {
+	r, err := rpc.Console.Create()
+	if err != nil {
+		return nil, err
 	}
 
 	return &Console{
-		id:  consoleID,
+		id:  r.ID,
 		rpc: rpc,
 	}, nil
 }
@@ -108,9 +104,9 @@ func (cm *ConsoleManager) List() (*rpc.ConsoleListRes, error) {
 	return cm.rpc.Console.List()
 }
 
-// Console connects to an active console otherwise creates a new console
-func (cm *ConsoleManager) Console(consoleID string) (*Console, error) {
-	return NewConsole(cm.rpc, consoleID)
+// Console creates a new framework console instance
+func (cm *ConsoleManager) Console() (*Console, error) {
+	return newConsole(cm.rpc)
 }
 
 // Destroy destroys an active console

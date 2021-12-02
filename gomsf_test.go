@@ -21,14 +21,14 @@ func TestLogin(t *testing.T) {
 
 	rpc := rpc.NewRPC(http.DefaultClient, ts.URL)
 
-	msf := &MSF{
+	c := &Client{
 		rpc:  rpc,
 		Auth: &AuthManager{rpc: rpc},
 	}
 
-	err := msf.Login("user", "pass")
+	err := c.Login("user", "pass")
 	assert.NoError(t, err)
-	assert.Equal(t, true, msf.Authenticated())
+	assert.Equal(t, true, c.Authenticated())
 }
 
 func TestLogout(t *testing.T) {
@@ -42,14 +42,14 @@ func TestLogout(t *testing.T) {
 	rpc := rpc.NewRPC(http.DefaultClient, ts.URL)
 	rpc.SetToken("token")
 
-	msf := &MSF{
+	c := &Client{
 		rpc:  rpc,
 		Auth: &AuthManager{rpc: rpc},
 	}
 
-	err := msf.Logout()
+	err := c.Logout()
 	assert.NoError(t, err)
-	assert.Equal(t, false, msf.Authenticated())
+	assert.Equal(t, false, c.Authenticated())
 }
 
 func TestNoAuthError(t *testing.T) {
@@ -58,13 +58,13 @@ func TestNoAuthError(t *testing.T) {
 
 	rpc := rpc.NewRPC(http.DefaultClient, ts.URL)
 
-	msf := &MSF{
+	c := &Client{
 		rpc:  rpc,
 		Auth: &AuthManager{rpc: rpc},
 		Core: &CoreManager{rpc: rpc},
 	}
 
-	_, err := msf.Core.Version()
+	_, err := c.Core.Version()
 	assert.Error(t, err)
 	assert.Equal(t, "client not authenticated", err.Error())
 }

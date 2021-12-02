@@ -10,7 +10,7 @@ import (
 	"github.com/hupe1980/gomsf/rpc"
 )
 
-type MSF struct {
+type Client struct {
 	user       string
 	pass       string
 	apiVersion string
@@ -24,7 +24,7 @@ type MSF struct {
 	Module     *ModuleManager
 }
 
-type MSFOptions struct {
+type ClientOptions struct {
 	Timeout         time.Duration
 	ProxyURL        string
 	TLSClientConfig *tls.Config
@@ -33,8 +33,8 @@ type MSFOptions struct {
 	APIVersion      string
 }
 
-func New(address string, optFns ...func(o *MSFOptions)) (*MSF, error) {
-	options := MSFOptions{
+func New(address string, optFns ...func(o *ClientOptions)) (*Client, error) {
+	options := ClientOptions{
 		Token:           "",
 		SSL:             true,
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, //nolint:gosec //unknown ca
@@ -57,7 +57,7 @@ func New(address string, optFns ...func(o *MSFOptions)) (*MSF, error) {
 		rpc.SetToken(options.Token)
 	}
 
-	msf := &MSF{
+	c := &Client{
 		apiVersion: options.APIVersion,
 		rpc:        rpc,
 		Auth:       &AuthManager{rpc: rpc},
@@ -69,52 +69,52 @@ func New(address string, optFns ...func(o *MSFOptions)) (*MSF, error) {
 		Plugins:    &PluginManager{rpc: rpc},
 	}
 
-	return msf, nil
+	return c, nil
 }
 
-func (msf *MSF) Authenticated() bool {
-	return msf.rpc.Token() != ""
+func (c *Client) Authenticated() bool {
+	return c.rpc.Token() != ""
 }
 
-func (msf *MSF) APIVersion() string {
-	return msf.apiVersion
+func (c *Client) APIVersion() string {
+	return c.apiVersion
 }
 
-func (msf *MSF) HealthCheck() error {
-	return msf.Health.Check()
+func (c *Client) HealthCheck() error {
+	return c.Health.Check()
 }
 
 // Login logs in by calling the 'auth.login' API. The authentication token will expire after 5
 // minutes, but will automatically be rewnewed when you make a new RPC request.
-func (msf *MSF) Login(user, pass string) error {
-	token, err := msf.Auth.Login(user, pass)
+func (c *Client) Login(user, pass string) error {
+	token, err := c.Auth.Login(user, pass)
 	if err != nil {
 		return err
 	}
 
-	msf.user = user
-	msf.pass = pass
+	c.user = user
+	c.pass = pass
 
-	msf.rpc.SetToken(token)
+	c.rpc.SetToken(token)
 
 	return nil
 }
 
 // ReLogin attempts to login again with the last known user name and password
-func (msf *MSF) ReLogin() error {
-	return msf.Login(msf.user, msf.pass)
+func (c *Client) ReLogin() error {
+	return c.Login(c.user, c.pass)
 }
 
-func (msf *MSF) Logout() error {
-	err := msf.Auth.Logout()
+func (c *Client) Logout() error {
+	err := c.Auth.Logout()
 	if err != nil {
 		return err
 	}
 
-	msf.user = ""
-	msf.pass = ""
+	c.user = ""
+	c.pass = ""
 
-	msf.rpc.SetToken("")
+	c.rpc.SetToken("")
 
 	return nil
 }
@@ -128,7 +128,7 @@ func generateURL(address string, ssl bool, apiVersion string) string {
 	return fmt.Sprintf("%s://%s/api/%s", protocol, address, apiVersion)
 }
 
-func newHTTPClient(options MSFOptions) (*http.Client, error) {
+func newHTTPClient(options ClientOptions) (*http.Client, error) {
 	transport := http.DefaultTransport.(*http.Transport).Clone()
 	transport.TLSClientConfig = options.TLSClientConfig
 

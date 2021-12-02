@@ -96,22 +96,52 @@ func (m *module) Exploits() (*ModuleExploitsRes, error) {
 	return res, nil
 }
 
+type ModuleCompatibleEvasionPayloadsReq struct {
+	Method     string
+	Token      string
+	ModuleName string
+	Target     int
+}
+
+type ModuleCompatibleEvasionPayloadsRes struct {
+	Payloads []string `msgpack:"payloads"`
+}
+
+// CompatiblePayloads returns the compatible target-specific payloads for an evasion module
+func (m *module) CompatibleEvasionPayloads(moduleName string, target int) (*ModuleCompatibleEvasionPayloadsRes, error) {
+	req := &ModuleCompatibleEvasionPayloadsReq{
+		Method:     "module.compatible_evasion_payloads",
+		Token:      m.rpc.Token(),
+		ModuleName: moduleName,
+		Target:     target,
+	}
+
+	var res *ModuleCompatibleEvasionPayloadsRes
+	if err := m.rpc.Call(req, &res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
 type ModuleCompatiblePayloadsReq struct {
 	Method     string
 	Token      string
 	ModuleName string
+	Target     int
 }
 
 type ModuleCompatiblePayloadsRes struct {
 	Payloads []string `msgpack:"payloads"`
 }
 
-// ModuleCompatiblePayloads returns the compatible payloads for a specific exploit
-func (m *module) CompatiblePayloads(moduleName string) (*ModuleCompatiblePayloadsRes, error) {
+// CompatiblePayloads returns the compatible payloads for a specific exploit
+func (m *module) CompatiblePayloads(moduleName string, target int) (*ModuleCompatiblePayloadsRes, error) {
 	req := &ModuleCompatiblePayloadsReq{
 		Method:     "module.compatible_payloads",
 		Token:      m.rpc.Token(),
 		ModuleName: moduleName,
+		Target:     target,
 	}
 
 	var res *ModuleCompatiblePayloadsRes

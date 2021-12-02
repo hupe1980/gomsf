@@ -38,7 +38,7 @@ func main() {
 	fmt.Println("'AAAA' encoded with shikata_ga_nai:")
 	fmt.Printf("%s\n", encoded)
 
-	exploit, err := client.Module.UseExploit("multi/handler")
+	exploit, err := client.Module.UseExploit("unix/ftp/vsftpd_234_backdoor")
 	if err != nil {
 		panic(err)
 	}
@@ -46,13 +46,6 @@ func main() {
 	fmt.Println(exploit.Options())
 
 	fmt.Println(exploit.Required())
-
-	// payloads, err := exploit.Payloads()
-	// if err != nil {
-	// 	panic(err)
-	// }
-
-	// fmt.Println(payloads)
 
 	info, err := client.Module.Info(gomsf.ExploitType, "windows/smb/ms08_067_netapi")
 	if err != nil {
